@@ -12,13 +12,19 @@ var (
 	ErrStackOverflow = errors.New("stack overflow")
 )
 
+// IStack defines the methods that a stack implementation should have.
+type IStack interface {
+	Push([32]byte) error
+	Pop() ([32]byte, error)
+}
+
 // Stack represents a last-in-first-out (LIFO) stack of 32-byte arrays.
 type Stack struct {
 	data [][32]byte
 }
 
 // NewStack creates and returns a new, empty Stack.
-func NewStack() *Stack {
+func NewStack() IStack {
 	return &Stack{data: make([][32]byte, 0)}
 }
 

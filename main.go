@@ -8,7 +8,7 @@ func main() {
 }
 
 type EVM struct {
-	*Stack
+	Stack IStack
 	*Memory
 	*Storage
 }
