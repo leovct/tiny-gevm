@@ -6,6 +6,7 @@ import (
 )
 
 func TestNewStack(t *testing.T) {
+	// Create an empty stack.
 	s := NewStack()
 	if s == nil {
 		t.Error("NewStack() returned nil")
