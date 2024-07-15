@@ -22,16 +22,34 @@ func TestPush(t *testing.T) {
 	s := NewStack()
 
 	// Push an element to the stack.
-	data := [32]byte{0x01}
-	err := s.Push(data)
+	// The stack should be equal to [0x01].
+	data1 := [32]byte{0x01}
+	err := s.Push(data1)
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
 	if len(s.data) != 1 {
 		t.Errorf("Push() resulted in a stack with %d elements, want 1", len(s.data))
 	}
-	if !bytes.Equal(s.data[0][:], data[:]) {
-		t.Errorf("Push() stored %v, want %v", s.data[0], data)
+	if !bytes.Equal(s.data[0][:], data1[:]) {
+		t.Errorf("Push() stored %v, want %v", s.data[0], data1)
+	}
+
+	// Push other elements to the stack.
+	// The stack should be equal to [0x01, 0x02]
+	data2 := [32]byte{0x02}
+	err = s.Push(data2)
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+	if len(s.data) != 2 {
+		t.Errorf("Push() resulted in a stack with %d elements, want 2", len(s.data))
+	}
+	if !bytes.Equal(s.data[0][:], data1[:]) {
+		t.Errorf("Push() stored %v, want %v", s.data[0], data1)
+	}
+	if !bytes.Equal(s.data[1][:], data2[:]) {
+		t.Errorf("Push() stored %v, want %v", s.data[1], data2)
 	}
 }
 
@@ -40,6 +58,7 @@ func TestPushFull(t *testing.T) {
 	s := NewStack()
 
 	// Push 1024 elements to the stack.
+	// The stack should contain 1024 0x01 elements.
 	data := [32]byte{0x01}
 	for i := 0; i < MAX_STACK_SIZE; i++ {
 		err := s.Push(data)
@@ -60,6 +79,7 @@ func TestPop(t *testing.T) {
 	s := NewStack()
 
 	// Push 3 elements to the stack.
+	// The stack should be equal to [0x01, 0x02, 0x03].
 	data1 := [32]byte{0x01}
 	data2 := [32]byte{0x02}
 	data3 := [32]byte{0x03}
@@ -68,6 +88,7 @@ func TestPop(t *testing.T) {
 	_ = s.Push(data3)
 
 	// Pop an element from the stack.
+	// The stack should be equal to [0x01, 0x02].
 	value, err := s.Pop()
 	if err != nil {
 		t.Errorf("Pop() returned an unexpected error: %v", err)
