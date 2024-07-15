@@ -26,12 +26,12 @@ type Stack struct {
 ```go
 // IMemory defines the methods that a memory implementation should have.
 type IMemory interface {
-	Store(value []byte, offset int)
-	Access(offset, size int) []byte
+  Store(value []byte, offset int)
+  Access(offset, size int) []byte
 }
 
 // Memory represents a byte-addressable memory structure.
 type Memory struct {
-	data []byte
+  data []byte
 }
 ```
