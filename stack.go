@@ -2,14 +2,14 @@ package main
 
 import "errors"
 
-// STACK_MAX_SIZE defines the maximum number of elements the stack can hold.
-const STACK_MAX_SIZE int = 1024
+// MAX_STACK_SIZE defines the maximum number of elements the stack can hold.
+const MAX_STACK_SIZE int = 1024
 
 var (
-	// ErrStackEmpty is returned when trying to pop from an empty stack.
-	ErrStackEmpty = errors.New("stack is empty")
-	// ErrStackFull is returned when trying to push to a full stack.
-	ErrStackFull = errors.New("stack is full")
+	// ErrStackUnderflow is returned when trying to pop from an empty stack.
+	ErrStackUnderflow = errors.New("stack underflow")
+	// ErrStackOverflow is returned when trying to push to a full stack.
+	ErrStackOverflow = errors.New("stack overflow")
 )
 
 // Stack represents a last-in-first-out (LIFO) stack of 32-byte arrays.
@@ -25,8 +25,8 @@ func NewStack() *Stack {
 // Push adds a new element to the top of the stack.
 // It returns an error if the stack is full.
 func (s *Stack) Push(element [32]byte) error {
-	if len(s.data) >= STACK_MAX_SIZE {
-		return ErrStackFull
+	if len(s.data) >= MAX_STACK_SIZE {
+		return ErrStackOverflow
 	}
 	s.data = append(s.data, element)
 	return nil
@@ -36,7 +36,7 @@ func (s *Stack) Push(element [32]byte) error {
 // If the stack is empty, it returns a zero-value 32-byte array and an error.
 func (s *Stack) Pop() ([32]byte, error) {
 	if len(s.data) == 0 {
-		return [32]byte{}, ErrStackEmpty
+		return [32]byte{}, ErrStackUnderflow
 	}
 	index := len(s.data) - 1
 	element := s.data[index]

@@ -40,7 +40,7 @@ func TestPushFull(t *testing.T) {
 
 	// Push 1024 elements to the stack.
 	data := [32]byte{0x01}
-	for i := 0; i < STACK_MAX_SIZE; i++ {
+	for i := 0; i < MAX_STACK_SIZE; i++ {
 		err := s.Push(data)
 		if err != nil {
 			t.Errorf("Push() returned an unexpected error on iteration %d: %v", i, err)
@@ -49,8 +49,8 @@ func TestPushFull(t *testing.T) {
 
 	// Try to push another element to the stack. It should fail.
 	err := s.Push(data)
-	if err != ErrStackFull {
-		t.Errorf("Push() on full stack returned %v, want %v", err, ErrStackFull)
+	if err != ErrStackOverflow {
+		t.Errorf("Push() on full stack returned %v, want %v", err, ErrStackOverflow)
 	}
 }
 
@@ -91,8 +91,8 @@ func TestPopEmpty(t *testing.T) {
 
 	// Try to pop an element from the empty stack. It should fail.
 	value, err := s.Pop()
-	if err != ErrStackEmpty {
-		t.Errorf("Pop() on full stack returned %v, want %v", err, ErrStackEmpty)
+	if err != ErrStackUnderflow {
+		t.Errorf("Pop() on full stack returned %v, want %v", err, ErrStackUnderflow)
 	}
 	if value != [32]byte{} {
 		t.Errorf("Pop() returned %v, want %v", value, [32]byte{})
