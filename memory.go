@@ -1,12 +1,18 @@
 package main
 
+// IMemory defines the methods that a memory implementation should have.
+type IMemory interface {
+	Store(value []byte, offset int)
+	Access(offset, size int) []byte
+}
+
 // Memory represents a byte-addressable memory structure.
 type Memory struct {
 	data []byte
 }
 
 // NewMemory creates and returns a new, empty Memory instance.
-func NewMemory() *Memory {
+func NewMemory() IMemory {
 	return &Memory{data: make([]byte, 0)}
 }
 
@@ -27,7 +33,7 @@ func (m *Memory) Store(value []byte, offset int) {
 // Access retrieves a slice of memory starting at the given offset with the specified size.
 // It handles cases where the requested region may extend beyond the current memory size.
 // Returns a byte slice of length 'size', zero-padded if necessary.
-func (m *Memory) Access(offset int, size int) []byte {
+func (m *Memory) Access(offset, size int) []byte {
 	// Return a zero-filled slice if memory is empty or offset is out of bounds.
 	if len(m.data) == 0 || offset >= len(m.data) {
 		return make([]byte, size)

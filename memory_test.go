@@ -10,14 +10,10 @@ func TestNewMemory(t *testing.T) {
 	m := NewMemory()
 	if m == nil {
 		t.Error("NewMemory() returned nil")
-	} else {
-		if len(m.data) != 0 {
-			t.Errorf("NewMemory() created a memory with %d elements, want 0", len(m.data))
-		}
 	}
 }
 
-func TestStore(t *testing.T) {
+func TestStoreAndAccess(t *testing.T) {
 	// Create an empty memory.
 	m := NewMemory()
 
@@ -28,8 +24,10 @@ func TestStore(t *testing.T) {
 	initialMemory := data[:]
 	m.Store(data, offset)
 
-	if !bytes.Equal(m.data, data) {
-		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, m.data, data)
+	// Access the memory.
+	memory := m.Access(0, 3)
+	if !bytes.Equal(memory, data) {
+		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, memory, data)
 	}
 }
 
@@ -48,9 +46,11 @@ func TestStoreOverWrite(t *testing.T) {
 	initialMemory := data[:]
 	m.Store(data, offset)
 
+	// Access the memory.
+	memory := m.Access(0, 3)
 	expectedMemory := []byte{0x01, 0x04, 0x03}
-	if !bytes.Equal(m.data, expectedMemory) {
-		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, m.data, expectedMemory)
+	if !bytes.Equal(memory, expectedMemory) {
+		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, memory, expectedMemory)
 	}
 }
 
@@ -65,9 +65,11 @@ func TestStoreAndExpandMemory(t *testing.T) {
 	initialMemory := data[:]
 	m.Store(data, offset)
 
+	// Access the memory.
+	memory := m.Access(0, 6)
 	expectedMemory := append([]byte{0x0, 0x0, 0x0}, data...)
-	if !bytes.Equal(m.data, expectedMemory) {
-		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, m.data, expectedMemory)
+	if !bytes.Equal(memory, expectedMemory) {
+		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, memory, expectedMemory)
 	}
 }
 
@@ -87,9 +89,11 @@ func TestStoreOverWriteAndExpandMemory(t *testing.T) {
 	initialMemory := data[:]
 	m.Store(data, offset)
 
+	// Access the memory.
+	memory := m.Access(0, 6)
 	expectedMemory := []byte{0x00, 0x01, 0x02, 0x0a, 0x0b, 0x0c}
-	if !bytes.Equal(m.data, expectedMemory) {
-		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, m.data, expectedMemory)
+	if !bytes.Equal(memory, expectedMemory) {
+		t.Errorf("Store() stored %v at offset %d in %v and resulted in %v, want %v", data, offset, initialMemory, memory, expectedMemory)
 	}
 }
 
@@ -106,9 +110,11 @@ func TestAccessInBounds(t *testing.T) {
 	size := 3
 	value := m.Access(offset, size)
 
+	// Access the memory.
+	memory := m.Access(0, 5)
 	expectedValue := []byte{0x01, 0x02, 0x03}
 	if !bytes.Equal(value, expectedValue) {
-		t.Errorf("Access() accessed element at offset %d with size %d in %v and resulted in %v, want %v", offset, size, m.data, value, expectedValue)
+		t.Errorf("Access() accessed element at offset %d with size %d in %v and resulted in %v, want %v", offset, size, memory, value, expectedValue)
 	}
 }
 
@@ -121,9 +127,11 @@ func TestAccessEmptyMemory(t *testing.T) {
 	size := 3
 	value := m.Access(offset, size)
 
+	// Access the memory.
+	memory := m.Access(0, 5)
 	expectedValue := []byte{0x00, 0x00, 0x00}
 	if !bytes.Equal(value, expectedValue) {
-		t.Errorf("Access() accessed element at offset %d with size %d in empty memory %v and resulted in %v, want %v", offset, size, m.data, value, expectedValue)
+		t.Errorf("Access() accessed element at offset %d with size %d in empty memory %v and resulted in %v, want %v", offset, size, memory, value, expectedValue)
 	}
 }
 
@@ -140,9 +148,11 @@ func TestAccess0utOfBonds(t *testing.T) {
 	size := 3
 	value := m.Access(offset, size)
 
+	// Access the memory.
+	memory := m.Access(0, 5)
 	expectedValue := []byte{0x00, 0x00, 0x00}
 	if !bytes.Equal(value, expectedValue) {
-		t.Errorf("Access() accessed out-of-bonds element at offset %d with size %d in %v and resulted in %v, want %v", offset, size, m.data, value, expectedValue)
+		t.Errorf("Access() accessed out-of-bonds element at offset %d with size %d in %v and resulted in %v, want %v", offset, size, memory, value, expectedValue)
 	}
 }
 
@@ -159,8 +169,10 @@ func TestAccessPartial0utOfBonds(t *testing.T) {
 	size := 5
 	value := m.Access(offset, size)
 
+	// Access the memory.
+	memory := m.Access(0, 5)
 	expectedValue := []byte{0x01, 0x02, 0x03, 0x00, 0x00}
 	if !bytes.Equal(value, expectedValue) {
-		t.Errorf("Access() accessed element at offset %d with size %d in %v and resulted in %v, want %v", offset, size, m.data, value, expectedValue)
+		t.Errorf("Access() accessed element at offset %d with size %d in %v and resulted in %v, want %v", offset, size, memory, value, expectedValue)
 	}
 }
