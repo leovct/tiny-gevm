@@ -23,7 +23,7 @@ type Stack struct {
 	data [][32]byte
 }
 
-// NewStack creates and returns a new, empty Stack.
+// NewStack creates and returns a new, empty Stack instance.
 func NewStack() IStack {
 	return &Stack{data: make([][32]byte, 0)}
 }
