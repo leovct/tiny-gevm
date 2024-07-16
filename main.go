@@ -8,9 +8,9 @@ func main() {
 }
 
 type EVM struct {
-	Stack  IStack
-	Memory IMemory
-	*Storage
+	Stack   IStack
+	Memory  IMemory
+	Storage IStorage
 }
 
 func NewEVM() *EVM {
