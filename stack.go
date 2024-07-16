@@ -1,6 +1,10 @@
 package main
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/holiman/uint256"
+)
 
 // MAX_STACK_SIZE defines the maximum number of elements the stack can hold.
 const MAX_STACK_SIZE int = 1024
@@ -14,38 +18,38 @@ var (
 
 // IStack defines the methods that a stack implementation should have.
 type IStack interface {
-	Push([32]byte) error
-	Pop() ([32]byte, error)
+	Push(*uint256.Int) error
+	Pop() (*uint256.Int, error)
 }
 
 // Stack represents a last-in-first-out (LIFO) stack of 32-byte arrays.
 type Stack struct {
-	data [][32]byte
+	data []uint256.Int
 }
 
 // NewStack creates and returns a new, empty Stack instance.
 func NewStack() IStack {
-	return &Stack{data: make([][32]byte, 0)}
+	return &Stack{data: make([]uint256.Int, 0)}
 }
 
 // Push adds a new element to the top of the stack.
 // It returns an error if the stack is full.
-func (s *Stack) Push(element [32]byte) error {
+func (s *Stack) Push(value *uint256.Int) error {
 	if len(s.data) >= MAX_STACK_SIZE {
 		return ErrStackOverflow
 	}
-	s.data = append(s.data, element)
+	s.data = append(s.data, *value)
 	return nil
 }
 
 // Pop removes and returns the top element from the stack.
 // If the stack is empty, it returns a zero-value 32-byte array and an error.
-func (s *Stack) Pop() ([32]byte, error) {
+func (s *Stack) Pop() (*uint256.Int, error) {
 	if len(s.data) == 0 {
-		return [32]byte{}, ErrStackUnderflow
+		return nil, ErrStackUnderflow
 	}
 	index := len(s.data) - 1
 	element := s.data[index]
 	s.data = s.data[:index]
-	return element, nil
+	return &element, nil
 }

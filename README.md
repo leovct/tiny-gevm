@@ -10,13 +10,13 @@ Inspired by [gevm](https://github.com/Jesserc/gevm) by [Jesserc](https://twitter
 
 ```go
 type IStack interface {
-  Push([32]byte) error
-  Pop() ([32]byte, error)
+  Push(*uint256.Int) error
+  Pop() (*uint256.Int, error)
 }
 
 // Stack represents a last-in-first-out (LIFO) stack of 32-byte arrays.
 type Stack struct {
-  data [][32]byte
+  data []uint256.Int
 }
 ```
 
