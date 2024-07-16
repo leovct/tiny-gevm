@@ -19,13 +19,24 @@ func TestAdd(t *testing.T) {
 
 	// Push some elements to the stack.
 	// The stack should be equal to [0x1, 0x2, 0x3].
-	evm.stack.Push(uint256.NewInt(1))
-	evm.stack.Push(uint256.NewInt(2))
-	evm.stack.Push(uint256.NewInt(3))
+	err := evm.stack.Push(uint256.NewInt(1))
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	err = evm.stack.Push(uint256.NewInt(2))
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	err = evm.stack.Push(uint256.NewInt(3))
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
 
 	// Add the two elements at the top of the stack.
 	// The stack should be equal to [0x1, 0x5].
-	err := evm.Add()
+	err = evm.Add()
 	if err != nil {
 		t.Errorf("Add() returned an unexpected error: %v", err)
 	}
@@ -58,10 +69,13 @@ func TestAddOnOneElementStack(t *testing.T) {
 
 	// Add one element to the stack.
 	// The stack should be equal to [0x1].
-	evm.stack.Push(uint256.NewInt(1))
+	err := evm.stack.Push(uint256.NewInt(1))
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
 
 	// Try to add the two elements at the top of the stack.
-	err := evm.Add()
+	err = evm.Add()
 	if err == nil {
 		t.Error("Add() should return an error because there is only one element in the stack")
 	}
@@ -85,16 +99,4 @@ func TestAddOnFullStack(t *testing.T) {
 	if err != nil {
 		t.Error("Add() should return an error because the stack is full")
 	}
-}
-
-func TestMul(t *testing.T) {
-	// TODO
-}
-
-func TestSub(t *testing.T) {
-	// TODO
-}
-
-func TestDiv(t *testing.T) {
-	// TODO
 }
