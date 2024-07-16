@@ -18,29 +18,29 @@ func TestPushAndPop(t *testing.T) {
 	s := NewStack()
 
 	// Push two elements to the stack.
-	// The stack should be equal to [0x01].
-	err := s.Push([32]byte{0x01})
+	// The stack should be equal to [0x1].
+	err := s.Push([32]byte{0x1})
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
 
-	// The stack should be equal to [0x01, 0x02].
-	err = s.Push([32]byte{0x02})
+	// The stack should be equal to [0x1, 0x2].
+	err = s.Push([32]byte{0x2})
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
 
 	// Check the elements by popping them off.
-	// The stack should be equal to [0x01].
+	// The stack should be equal to [0x1].
 	popped, err := s.Pop()
-	expectedValue := [32]byte{0x02}
+	expectedValue := [32]byte{0x2}
 	if err != nil || !bytes.Equal(popped[:], expectedValue[:]) {
 		t.Errorf("Expected %v, got %v", expectedValue, popped)
 	}
 
 	// The stack should be equal to [].
 	popped, err = s.Pop()
-	expectedValue = [32]byte{0x01}
+	expectedValue = [32]byte{0x1}
 	if err != nil || !bytes.Equal(popped[:], expectedValue[:]) {
 		t.Errorf("Expected %v, got %v", expectedValue, popped)
 	}
@@ -51,8 +51,8 @@ func TestPushFull(t *testing.T) {
 	s := NewStack()
 
 	// Push 1024 elements to the stack.
-	// The stack should contain 1024 0x01 elements.
-	data := [32]byte{0x01}
+	// The stack should contain 1024 0x1 elements.
+	data := [32]byte{0x1}
 	for i := 0; i < MAX_STACK_SIZE; i++ {
 		err := s.Push(data)
 		if err != nil {

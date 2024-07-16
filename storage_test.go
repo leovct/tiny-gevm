@@ -18,10 +18,10 @@ func TestStoreAndLoad(t *testing.T) {
 	s := NewStorage()
 
 	// Store a few values in the storage.
-	value1 := [32]byte{0x01, 0x02, 0x03}
+	value1 := [32]byte{0x1, 0x2, 0x3}
 	s.Store(0, value1)
 
-	value2 := [32]byte{0x04, 0x05, 0x06}
+	value2 := [32]byte{0x4, 0x5, 0x6}
 	s.Store(10, value2)
 
 	// Load the values stored in storage.
