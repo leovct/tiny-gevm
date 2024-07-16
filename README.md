@@ -9,7 +9,6 @@ Inspired by [gevm](https://github.com/Jesserc/gevm) by [Jesserc](https://twitter
 ## Stack
 
 ```go
-// IStack defines the methods that a stack implementation should have.
 type IStack interface {
   Push([32]byte) error
   Pop() ([32]byte, error)
@@ -24,7 +23,6 @@ type Stack struct {
 ## Memory
 
 ```go
-// IMemory defines the methods that a memory implementation should have.
 type IMemory interface {
   Store(value []byte, offset int)
   Access(offset, size int) []byte
@@ -33,5 +31,19 @@ type IMemory interface {
 // Memory represents a byte-addressable memory structure.
 type Memory struct {
   data []byte
+}
+```
+
+## Storage
+
+```go
+type IStorage interface {
+  Store(key int, value [32]byte)
+  Load(key int) [32]byte
+}
+
+// Storage represents a word-addressable storage structure.
+type Storage struct {
+  data map[int][32]byte
 }
 ```
