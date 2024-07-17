@@ -19,17 +19,17 @@ func TestAdd(t *testing.T) {
 
 	// Push some elements to the stack.
 	// The stack should be equal to [0x1, 0x2, 0x3].
-	err := evm.stack.Push(uint256.NewInt(1))
+	err := evm.Push(uint256.NewInt(1))
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
 
-	err = evm.stack.Push(uint256.NewInt(2))
+	err = evm.Push(uint256.NewInt(2))
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
 
-	err = evm.stack.Push(uint256.NewInt(3))
+	err = evm.Push(uint256.NewInt(3))
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
@@ -42,7 +42,7 @@ func TestAdd(t *testing.T) {
 	}
 
 	// Pop the element from the stack to check the result.
-	result, err := evm.stack.Pop()
+	result, err := evm.Pop()
 	expectedResult := uint256.NewInt(5)
 	if err != nil {
 		t.Errorf("Pop() returned an unexpected error: %v", err)
@@ -69,7 +69,7 @@ func TestAddOnOneElementStack(t *testing.T) {
 
 	// Add one element to the stack.
 	// The stack should be equal to [0x1].
-	err := evm.stack.Push(uint256.NewInt(1))
+	err := evm.Push(uint256.NewInt(1))
 	if err != nil {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
@@ -88,7 +88,7 @@ func TestAddOnFullStack(t *testing.T) {
 	// Push 1024 elements to the stack.
 	// The stack should contain 1024 0x1 elements.
 	for i := 0; i < MAX_STACK_SIZE; i++ {
-		err := evm.stack.Push(uint256.NewInt(1))
+		err := evm.Push(uint256.NewInt(1))
 		if err != nil {
 			t.Errorf("Push() returned an unexpected error on iteration %d: %v", i, err)
 		}
