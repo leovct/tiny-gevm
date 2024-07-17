@@ -18,7 +18,12 @@ var (
 
 // IStack defines the methods that a stack implementation should have.
 type IStack interface {
+	// Push adds a new element to the top of the stack.
+	// It returns an error if the stack is full.
 	Push(*uint256.Int) error
+
+	// Pop removes and returns the top element from the stack.
+	// If the stack is empty, it returns a zero-value 32-byte array and an error.
 	Pop() (*uint256.Int, error)
 }
 
@@ -32,8 +37,6 @@ func NewStack() IStack {
 	return &Stack{data: make([]uint256.Int, 0)}
 }
 
-// Push adds a new element to the top of the stack.
-// It returns an error if the stack is full.
 func (s *Stack) Push(value *uint256.Int) error {
 	if len(s.data) >= MAX_STACK_SIZE {
 		return ErrStackOverflow
@@ -42,8 +45,6 @@ func (s *Stack) Push(value *uint256.Int) error {
 	return nil
 }
 
-// Pop removes and returns the top element from the stack.
-// If the stack is empty, it returns a zero-value 32-byte array and an error.
 func (s *Stack) Pop() (*uint256.Int, error) {
 	if len(s.data) == 0 {
 		return nil, ErrStackUnderflow

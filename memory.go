@@ -2,7 +2,14 @@ package main
 
 // IMemory defines the methods that a memory implementation should have.
 type IMemory interface {
+	// Store writes a byte slice to memory at the specified offset.
+	// If the offset plus the length of the value exceeds the current memory size,
+	// the memory is automatically expanded to accommodate the new data.
 	Store(value []byte, offset int)
+
+	// Access retrieves a slice of memory starting at the given offset with the specified size.
+	// It handles cases where the requested region may extend beyond the current memory size.
+	// Returns a byte slice of length 'size', zero-padded if necessary.
 	Access(offset, size int) []byte
 }
 
@@ -16,9 +23,6 @@ func NewMemory() IMemory {
 	return &Memory{data: make([]byte, 0)}
 }
 
-// Store writes a byte slice to memory at the specified offset.
-// If the offset plus the length of the value exceeds the current memory size,
-// the memory is automatically expanded to accommodate the new data.
 func (m *Memory) Store(value []byte, offset int) {
 	// Expand the memory if needed.
 	requiredSize := offset + len(value)
@@ -30,9 +34,6 @@ func (m *Memory) Store(value []byte, offset int) {
 	copy(m.data[offset:], value)
 }
 
-// Access retrieves a slice of memory starting at the given offset with the specified size.
-// It handles cases where the requested region may extend beyond the current memory size.
-// Returns a byte slice of length 'size', zero-padded if necessary.
 func (m *Memory) Access(offset, size int) []byte {
 	// Return a zero-filled slice if memory is empty or offset is out of bounds.
 	if len(m.data) == 0 || offset >= len(m.data) {
