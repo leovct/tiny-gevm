@@ -21,8 +21,11 @@ type IEVM interface {
 	// Subtract the top two elements of the stack and push the result back to the stack.
 	Sub() error
 
-	// Divide the top two elements of the stack and push the result back to the stack.
+	// Perform the integer divison operation on the top two elements of the stack and push the result back to the stack.
 	Div() error
+
+	// Perform the signed integer division operation (trunced) on the top two elements of the stack and push the result back to the stack.
+	SDiv() error
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -73,6 +76,13 @@ func (e *EVM) Sub() error {
 func (e *EVM) Div() error {
 	op := func(a, b *uint256.Int) *uint256.Int {
 		return new(uint256.Int).Div(a, b)
+	}
+	return e.performStackOperation(op)
+}
+
+func (e *EVM) SDiv() error {
+	op := func(a, b *uint256.Int) *uint256.Int {
+		return new(uint256.Int).SDiv(a, b)
 	}
 	return e.performStackOperation(op)
 }

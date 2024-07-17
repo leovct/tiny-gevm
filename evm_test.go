@@ -41,6 +41,13 @@ func TestDiv(t *testing.T) {
 	testStackOperation(t, op, nil, initialStack, expectedStack)
 }
 
+func TestSDiv(t *testing.T) {
+	op := func(evm IEVM) error { return evm.SDiv() }
+	initialStack := []uint64{1, 2, 4}
+	expectedStack := []uint64{1, 2}
+	testStackOperation(t, op, nil, initialStack, expectedStack)
+}
+
 func TestStackOperationOnEmptyStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Add() }
 	initialStack := []uint64{}
