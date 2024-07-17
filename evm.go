@@ -12,13 +12,17 @@ type IEVM interface {
 	Pop() (*uint256.Int, error)
 
 	//// Math operations
-	// Add the top two elements of the stack.
-	// It pops two values from the stack, adds them, and pushes the result back to the stack.
+	// Add the top two elements of the stack and push the result back to the stack.
 	Add() error
 
 	// Multiply the top two elements of the stack and push the result back to the stack.
-	// It pops two values from the stack, multiplies them, and pushes the result back to the stack.
 	Mul() error
+
+	// Subtract the top two elements of the stack and push the result back to the stack.
+	Sub() error
+
+	// Divide the top two elements of the stack and push the result back to the stack.
+	Div() error
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -46,15 +50,31 @@ func (e *EVM) Pop() (*uint256.Int, error) {
 }
 
 func (e *EVM) Add() error {
-	return e.performStackOperation(func(a, b *uint256.Int) *uint256.Int {
+	op := func(a, b *uint256.Int) *uint256.Int {
 		return new(uint256.Int).Add(a, b)
-	})
+	}
+	return e.performStackOperation(op)
 }
 
 func (e *EVM) Mul() error {
-	return e.performStackOperation(func(a, b *uint256.Int) *uint256.Int {
+	op := func(a, b *uint256.Int) *uint256.Int {
 		return new(uint256.Int).Mul(a, b)
-	})
+	}
+	return e.performStackOperation(op)
+}
+
+func (e *EVM) Sub() error {
+	op := func(a, b *uint256.Int) *uint256.Int {
+		return new(uint256.Int).Sub(a, b)
+	}
+	return e.performStackOperation(op)
+}
+
+func (e *EVM) Div() error {
+	op := func(a, b *uint256.Int) *uint256.Int {
+		return new(uint256.Int).Div(a, b)
+	}
+	return e.performStackOperation(op)
 }
 
 // Perform a binary operation on the top two elements on the stack.

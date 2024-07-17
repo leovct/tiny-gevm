@@ -27,6 +27,20 @@ func TestMul(t *testing.T) {
 	testStackOperation(t, op, nil, initialStack, expectedStack)
 }
 
+func TestSub(t *testing.T) {
+	op := func(evm IEVM) error { return evm.Sub() }
+	initialStack := []uint64{1, 2, 3}
+	expectedStack := []uint64{1, 1}
+	testStackOperation(t, op, nil, initialStack, expectedStack)
+}
+
+func TestDiv(t *testing.T) {
+	op := func(evm IEVM) error { return evm.Div() }
+	initialStack := []uint64{1, 2, 4}
+	expectedStack := []uint64{1, 2}
+	testStackOperation(t, op, nil, initialStack, expectedStack)
+}
+
 func TestStackOperationOnEmptyStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Add() }
 	initialStack := []uint64{}
