@@ -122,3 +122,7 @@ type Storage struct {
   data map[int][32]byte
 }
 ```
+
+## References
+
+- [evm.codes](https://www.evm.codes/)
