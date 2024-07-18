@@ -27,7 +27,8 @@ func main() {
 	updatedReadme := string(readme)
 
 	for file, section := range fileSectionMap {
-		types, err := extractTypes(file)
+		var types []string
+		types, err = extractTypes(file)
 		if err != nil {
 			fmt.Printf("Error processing %s: %v\n", file, err)
 			continue
