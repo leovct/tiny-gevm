@@ -36,3 +36,24 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - name: Run tests
         run: make test
+
+  readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Try to update README.md
+        run: go run tools/update_readme.go
+      - name: Check for changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "❌ Error: README.md is not up to date. Please run \`go run tools/update_readme.go\`."
+            git status --porcelain
+            git diff
+            exit 1
+          else
+            echo "✅ README.md is up to date."
+          fi
