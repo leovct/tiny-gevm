@@ -40,6 +40,34 @@ func (e *EVM) Pop() (*uint256.Int, error) {
 	return e.stack.Pop()
 }
 
+// Perform an arithmetic or a bitwise operation on the top two elements on the stack.
+// It pops two values from the stack, applies the operation, and pushes the result back to the stack.
+func (e *EVM) performBinaryStackOperation(numOperands int, operation func(...*uint256.Int) *uint256.Int) error {
+	// Check if there are enough elements on the stack.
+	if e.stack.Size() < numOperands {
+		return ErrStackUnderflow
+	}
+
+	// Pop the required number of elements from the stack.
+	operands := make([]*uint256.Int, numOperands)
+	for i := 0; i < numOperands; i++ {
+		var err error
+		operands[i], err = e.stack.Pop()
+		if err != nil {
+			return err
+		}
+	}
+
+	// Perform the operation on the elements
+	result := operation(operands...)
+
+	// Push the result back to the stack.
+	// This step should never fail because of an overflow.
+	// Indeed, two elements are popped from the stack and only one is pushed back.
+	_ = e.stack.Push(result)
+	return nil
+}
+
 // Perform a binary operation on the top two elements on the stack.
 // It pops two values from the stack, applies the operation, and pushes the result back to the stack.
 func (e *EVM) performStackOperation(op func(x, y *uint256.Int) *uint256.Int) error {

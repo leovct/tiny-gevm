@@ -80,3 +80,28 @@ func TestPopEmpty(t *testing.T) {
 		t.Errorf("Pop() returned %v, want %v", value, nil)
 	}
 }
+
+func TestSize(t *testing.T) {
+	// Create an empty stack.
+	s := NewStack()
+
+	// Push two elements to the stack.
+	// The stack should be equal to [0x1].
+	err := s.Push(uint256.NewInt(1))
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	// The stack should be equal to [0x1, 0x2].
+	err = s.Push(uint256.NewInt(2))
+	if err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	// Check the size of the stack.
+	size := s.Size()
+	expectedSize := 2
+	if size != expectedSize {
+		t.Errorf("Expected %v, got %v", expectedSize, size)
+	}
+}

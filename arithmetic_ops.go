@@ -52,106 +52,89 @@ type IArithmeticOps interface {
 }
 
 func (e *EVM) Add() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).Add(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) Mul() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).Mul(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) Sub() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).Sub(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) Div() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).Div(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) SDiv() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).SDiv(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) Mod() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).Mod(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) SMod() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).SMod(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) AddMod() error {
-	x, err := e.stack.Pop()
-	if err != nil {
-		return err
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y, m := operands[0], operands[1], operands[2]
+		return new(uint256.Int).AddMod(x, y, m)
 	}
-
-	y, err := e.stack.Pop()
-	if err != nil {
-		return err
-	}
-
-	m, err := e.stack.Pop()
-	if err != nil {
-		return err
-	}
-
-	result := new(uint256.Int).AddMod(x, y, m)
-	_ = e.stack.Push(result)
-	return nil
+	return e.performBinaryStackOperation(3, op)
 }
 
 func (e *EVM) MulMod() error {
-	x, err := e.stack.Pop()
-	if err != nil {
-		return err
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y, m := operands[0], operands[1], operands[2]
+		return new(uint256.Int).MulMod(x, y, m)
 	}
-
-	y, err := e.stack.Pop()
-	if err != nil {
-		return err
-	}
-
-	m, err := e.stack.Pop()
-	if err != nil {
-		return err
-	}
-
-	result := new(uint256.Int).MulMod(x, y, m)
-	_ = e.stack.Push(result)
-	return nil
+	return e.performBinaryStackOperation(3, op)
 }
 
 func (e *EVM) Exp() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).Exp(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }
 
 func (e *EVM) SignExtend() error {
-	op := func(x, y *uint256.Int) *uint256.Int {
+	op := func(operands ...*uint256.Int) *uint256.Int {
+		x, y := operands[0], operands[1]
 		return new(uint256.Int).ExtendSign(x, y)
 	}
-	return e.performStackOperation(op)
+	return e.performBinaryStackOperation(2, op)
 }

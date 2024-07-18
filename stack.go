@@ -25,6 +25,9 @@ type IStack interface {
 	// Pop removes and returns the top element from the stack.
 	// If the stack is empty, it returns a zero-value 32-byte array and an error.
 	Pop() (*uint256.Int, error)
+
+	// Size returns the number of elements currently on the stack.
+	Size() int
 }
 
 // Stack represents a last-in-first-out (LIFO) stack of 32-byte arrays.
@@ -53,4 +56,8 @@ func (s *Stack) Pop() (*uint256.Int, error) {
 	element := s.data[index]
 	s.data = s.data[:index]
 	return &element, nil
+}
+
+func (s *Stack) Size() int {
+	return len(s.data)
 }
