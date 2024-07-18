@@ -10,57 +10,24 @@ Inspired by [gevm](https://github.com/Jesserc/gevm) by [Jesserc](https://twitter
 
 ```go
 type IEVM interface {
-  //// Stack operations
+  // Stack operations.
   // Push an item to the stack.
   Push(*uint256.Int) error
-
   // Pop an item from the stack.
   Pop() (*uint256.Int, error)
 
-  //// Math operations
-  // Add the top two elements of the stack and push the result, x + y, back to the stack.
-  Add() error
+  // Arithmetic operations.
+  IArithmeticOps
 
-  // Multiply the top two elements of the stack and push the result, x * y, back to the stack.
-  Mul() error
-
-  // Subtract the top two elements of the stack and push the result, x - y, back to the stack.
-  Sub() error
-
-  // Perform the integer divison operation on the top two elements of the stack and push the result, x // y, back to the stack.
-  Div() error
-
-  // Perform the signed integer division operation (trunced) on the top two elements of the stack and push the result, x // y, back to the stack.
-  SDiv() error
-
-  // Perform the modulo remained operation on the top two elements of the stack and push the result, x % y, back to the stack.
-  Mod() error
-
-  // Perform the signed modulo remained operation on the top two elements of the stack and push the result, x % y, back to the stack.
-  SMod() error
-
-  // Perform the modulo addition operation on the top two elements of the stack and push the result, (x + y) % m, back to the stack.
-  // The third top element of the stack is the integer denominator m.
-  AddMod() error
-
-  // Perform the modulo multiplication operation on the top two elements of the stack and push the result, (x * y) % m, back to the stack.
-  // The third top element of the stack is the integer denominator N.
-  MulMod() error
-
-  // Perform the exponential operation on the top two elements of the stack and push the result, x ** y, back to the stack.
-  Exp() error
-
-  // Extend the length of two’s complement signed integer.
-  // The first top element of the stack, b, represents the size in byte - 1 of the integer to sign extend.
-  // The second top element of the stack, x, represents the integer value to sign extend.
-  SignExtend() error
+  // Comparison and bitwise logic operations.
+  IComparisonAndBitwiseOps
 }
 
 // EVM represents an Ethereum Virtual Machine.
 type EVM struct {
-	stack   IStack
-	memory  IMemory
-	storage IStorage
+  stack   IStack
+  memory  IMemory
+  storage IStorage
 }
 ```
 
@@ -75,6 +42,9 @@ type IStack interface {
   // Pop removes and returns the top element from the stack.
   // If the stack is empty, it returns a zero-value 32-byte array and an error.
   Pop() (*uint256.Int, error)
+
+  // Size returns the number of elements currently on the stack.
+  Size() int
 }
 
 // Stack represents a last-in-first-out (LIFO) stack of 32-byte arrays.
