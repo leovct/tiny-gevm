@@ -14,6 +14,9 @@ type IEVM interface {
 
 	// Arithmetic operations.
 	IArithmeticOps
+
+	// Comparison and bitwise logic operations.
+	IComparisonAndBitwiseOps
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -68,9 +71,10 @@ func (e *EVM) performBinaryStackOperation(numOperands int, operation func(...*ui
 	return nil
 }
 
-// Perform a binary operation on the top two elements on the stack.
+// Perform a comparison operation on the top two elements on the stack.
 // It pops two values from the stack, applies the operation, and pushes the result back to the stack.
-func (e *EVM) performStackOperation(op func(x, y *uint256.Int) *uint256.Int) error {
+// If the result is true, push one to the stack, else push zero.
+func (e *EVM) performComparisonStackOperation(op func(x, y *uint256.Int) bool) error {
 	// Pop an element from the stack.
 	x, err := e.stack.Pop()
 	if err != nil {
@@ -89,6 +93,10 @@ func (e *EVM) performStackOperation(op func(x, y *uint256.Int) *uint256.Int) err
 	// Push the result back to the stack.
 	// This step should never fail because of an overflow.
 	// Indeed, two elements are popped from the stack and only one is pushed back.
-	_ = e.stack.Push(result)
+	if result {
+		_ = e.stack.Push(uint256.NewInt(1))
+	} else {
+		_ = e.stack.Push(uint256.NewInt(0))
+	}
 	return nil
 }
