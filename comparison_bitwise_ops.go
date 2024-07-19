@@ -16,11 +16,11 @@ type IComparisonAndBitwiseOps interface {
 
 	// Signed less-than comparison.
 	// Stack: [x, y, ...] -> [x < y, ...]
-	Slt() error
+	SLt() error
 
 	// Signed greater-than comparison.
 	// Stack: [x, y, ...] -> [x > y, ...]
-	Sgt() error
+	SGt() error
 
 	// Equality comparison.
 	// Stack: [x, y, ...] -> [x == y, ...]
@@ -85,14 +85,14 @@ func (e *EVM) Gt() error {
 	return e.performComparisonStackOperation(op)
 }
 
-func (e *EVM) Slt() error {
+func (e *EVM) SLt() error {
 	op := func(x, y *uint256.Int) bool {
 		return x.Slt(y)
 	}
 	return e.performComparisonStackOperation(op)
 }
 
-func (e *EVM) Sgt() error {
+func (e *EVM) SGt() error {
 	op := func(x, y *uint256.Int) bool {
 		return x.Sgt(y)
 	}
