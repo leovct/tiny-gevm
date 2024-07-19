@@ -142,6 +142,12 @@ func TestByte(t *testing.T) {
 	// Stack: [1, 2, 3, 0x11223344, 27] -> [1, 2, 3, 0x0]
 	expectedStack = []uint64{1, 2, 3, 0x0}
 	testStackOperation(t, op, nil, initialStack, expectedStack)
+
+	// A last test just to check something.
+	initialStack = []uint64{1, 2, 3, 31}
+	// Stack: [1, 2, 3, 31] -> [1, 2, 3]
+	expectedStack = []uint64{1, 2, 3}
+	testStackOperation(t, op, nil, initialStack, expectedStack)
 }
 
 func TestShl(t *testing.T) {
