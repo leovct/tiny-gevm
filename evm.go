@@ -47,7 +47,7 @@ func (e *EVM) Pop() (*uint256.Int, error) {
 // It pops two values from the stack, applies the operation, and pushes the result back to the stack.
 func (e *EVM) performBinaryStackOperation(numOperands int, operation func(...*uint256.Int) *uint256.Int) error {
 	// Check if there are enough elements on the stack.
-	if e.stack.Size() < numOperands {
+	if e.stack.Size() <= numOperands {
 		return ErrStackUnderflow
 	}
 
@@ -57,6 +57,9 @@ func (e *EVM) performBinaryStackOperation(numOperands int, operation func(...*ui
 		var err error
 		operands[i], err = e.stack.Pop()
 		if err != nil {
+			// Unreachable in theory.
+			// This step should never fail because of an overflow.
+			// Indeed, we perform a check to make sure the number of operands is always smaller or equal to the number of elements in the stack.
 			return err
 		}
 	}
@@ -65,9 +68,12 @@ func (e *EVM) performBinaryStackOperation(numOperands int, operation func(...*ui
 	result := operation(operands...)
 
 	// Push the result back to the stack.
-	// This step should never fail because of an overflow.
-	// Indeed, two elements are popped from the stack and only one is pushed back.
-	_ = e.stack.Push(result)
+	if err := e.stack.Push(result); err != nil {
+		// Unreachable in theory.
+		// This step should never fail because of an overflow.
+		// Indeed, two elements are popped from the stack and only one is pushed back.
+		return err
+	}
 	return nil
 }
 
@@ -88,15 +94,22 @@ func (e *EVM) performComparisonStackOperation(op func(x, y *uint256.Int) bool) e
 	}
 
 	// Perform the operation on the two elements.
-	result := op(x, y)
+	boolResult := op(x, y)
 
 	// Push the result back to the stack.
 	// This step should never fail because of an overflow.
 	// Indeed, two elements are popped from the stack and only one is pushed back.
-	if result {
-		_ = e.stack.Push(uint256.NewInt(1))
+	var intResult *uint256.Int
+	if boolResult {
+		intResult = uint256.NewInt(1)
 	} else {
-		_ = e.stack.Push(uint256.NewInt(0))
+		intResult = uint256.NewInt(0)
+	}
+	if err := e.stack.Push(intResult); err != nil {
+		// Unreachable in theory.
+		// This step should never fail because of an overflow.
+		// Indeed, two elements are popped from the stack and only one is pushed back.
+		return err
 	}
 	return nil
 }

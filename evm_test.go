@@ -18,22 +18,21 @@ func TestStackOperationUnderflows(t *testing.T) {
 	oneElementStack := []uint64{1}
 	twoElementsStack := []uint64{1, 2}
 
-	// Any operation similar to Add
+	// 2 operands arithmetic operation.
 	addOp := func(evm IEVM) error { return evm.Add() }
 	testStackOperation(t, addOp, ErrStackUnderflow, emptyStack, emptyStack)
 	testStackOperation(t, addOp, ErrStackUnderflow, oneElementStack, emptyStack)
 
-	// AddMod
+	// 3 operands arithmetic operation.
 	addModOp := func(evm IEVM) error { return evm.AddMod() }
 	testStackOperation(t, addModOp, ErrStackUnderflow, emptyStack, emptyStack)
 	testStackOperation(t, addModOp, ErrStackUnderflow, oneElementStack, emptyStack)
 	testStackOperation(t, addModOp, ErrStackUnderflow, twoElementsStack, emptyStack)
 
-	// MulMod
-	mulModOp := func(evm IEVM) error { return evm.MulMod() }
-	testStackOperation(t, mulModOp, ErrStackUnderflow, emptyStack, emptyStack)
-	testStackOperation(t, mulModOp, ErrStackUnderflow, oneElementStack, emptyStack)
-	testStackOperation(t, mulModOp, ErrStackUnderflow, twoElementsStack, emptyStack)
+	// 2 operands comparison operation.
+	eqOp := func(evm IEVM) error { return evm.Eq() }
+	testStackOperation(t, eqOp, ErrStackUnderflow, emptyStack, emptyStack)
+	testStackOperation(t, eqOp, ErrStackUnderflow, oneElementStack, emptyStack)
 }
 
 func TestStackOperationOnFullStack(t *testing.T) {
