@@ -77,10 +77,10 @@ func testStackOperation(t *testing.T, op func(evm IEVM) error, expectedErr error
 
 		expectedValue := expectedStack[i]
 		if popped == nil {
-			t.Errorf("Expected %v, got %v", expectedValue, popped)
+			t.Errorf("Expected %v, got %v", expectedValue, popped.Hex())
 		} else {
 			if popped.Uint64() != expectedValue {
-				t.Errorf("Expected %v, got %v", expectedValue, popped)
+				t.Errorf("Expected %v, got %v", expectedValue, popped.Hex())
 			}
 		}
 	}
