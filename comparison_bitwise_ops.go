@@ -55,6 +55,7 @@ type IComparisonAndBitwiseOps interface {
 	// Left shift operation.
 	// Shift the bits towards the most significant one.
 	// The bits moved after the 256th one are discarded, the new bits are set to 0.
+	// It is equivalent to multiplying value by 2 ** shift.
 	// Stack: [shift, value, ...] -> [value << shift, ...]
 	Shl() error
 
@@ -62,6 +63,7 @@ type IComparisonAndBitwiseOps interface {
 	// Shift the bits towards the least significant one.
 	// The bits moved before the first one are discarded, the new bits are set to 0.
 	// Stack: [shift, value, ...] -> [value >> shift, ...]
+	// It is equivalent to dividing value by 2 ** shift, throwing out any remainders.
 	Shr() error
 
 	// Arithmetic (signed) right shift operation
@@ -116,7 +118,7 @@ func (e *EVM) IsZero() error {
 func (e *EVM) And() error {
 	op := func(operands ...*uint256.Int) *uint256.Int {
 		x, y := operands[0], operands[1]
-		return new(uint256.Int).Add(x, y)
+		return new(uint256.Int).And(x, y)
 	}
 	return e.performBinaryStackOperation(2, op)
 }
