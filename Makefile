@@ -41,3 +41,7 @@ lint: tidy vet golangci-lint ## Run linters.
 test: ## Run tests.
 	go test -race -v -coverprofile=coverage.out go-evm
 	go tool cover -func coverage.out
+
+.PHONY: coverage
+coverage: test ## Open HTML coverage report.
+	go tool cover -html=coverage.out
