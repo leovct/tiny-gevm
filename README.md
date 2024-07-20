@@ -17,11 +17,18 @@ type IEVM interface {
 	// Pop an item from the stack.
 	Pop() (*uint256.Int, error)
 
+	// Memory operations.
+	// Write byte slice to memory at the specified offset.
+	Store(value []byte, offset int)
+
 	// Arithmetic operations.
 	IArithmeticOps
 
 	// Comparison and bitwise logic operations.
 	IComparisonAndBitwiseOps
+
+	// SHAA3 operations.
+	ISHA3Ops
 }
 
 // EVM represents an Ethereum Virtual Machine.

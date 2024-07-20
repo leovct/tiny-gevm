@@ -12,11 +12,18 @@ type IEVM interface {
 	// Pop an item from the stack.
 	Pop() (*uint256.Int, error)
 
+	// Memory operations.
+	// Write byte slice to memory at the specified offset.
+	Store(value []byte, offset int)
+
 	// Arithmetic operations.
 	IArithmeticOps
 
 	// Comparison and bitwise logic operations.
 	IComparisonAndBitwiseOps
+
+	// SHAA3 operations.
+	ISHA3Ops
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -41,6 +48,10 @@ func (e *EVM) Push(value *uint256.Int) error {
 
 func (e *EVM) Pop() (*uint256.Int, error) {
 	return e.stack.Pop()
+}
+
+func (e *EVM) Store(value []byte, offset int) {
+	e.memory.Store(value, offset)
 }
 
 // Perform an arithmetic or a bitwise operation on the top two elements on the stack.
