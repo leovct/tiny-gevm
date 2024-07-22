@@ -29,6 +29,9 @@ type IEVM interface {
 
 	// SHAA3 operations.
 	ISHA3Ops
+
+	// Stack operations.
+	IStackOps
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -36,6 +39,20 @@ type EVM struct {
 	stack	IStack
 	memory	IMemory
 	storage	IStorage
+	env	ExecutionEnvironment
+	state	MachineState
+}
+
+// ExecutionEnvironment represents the EVM execution environment.
+type ExecutionEnvironment struct {
+	// Machine code to be executed by the EVM.
+	code []byte
+}
+
+// MachineState represents the EVM state.
+type MachineState struct {
+	// Program counter.
+	pc int
 }
 ```
 

@@ -256,15 +256,15 @@ func (e *EVM) pushN(n int) error {
 		// Note that the EVM exposes Push0() but the logic is different and does not rely on pushN().
 		return ErrInvalidPushSize
 	}
-	if len(e.code) <= e.pc+n {
+	if len(e.env.code) <= e.state.pc+n {
 		return ErrPushSizeExceedsCodeSize
 	}
 
-	code := e.code[e.pc+1 : e.pc+1+n]
+	code := e.env.code[e.state.pc+1 : e.state.pc+1+n]
 	value := new(uint256.Int).SetBytes(code)
 	if err := e.stack.Push(value); err != nil {
 		return err
 	}
-	e.pc += n + 1
+	e.state.pc += n + 1
 	return nil
 }

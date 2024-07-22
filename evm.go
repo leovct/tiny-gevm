@@ -34,9 +34,20 @@ type EVM struct {
 	stack   IStack
 	memory  IMemory
 	storage IStorage
+	env     ExecutionEnvironment
+	state   MachineState
+}
 
-	pc   int
+// ExecutionEnvironment represents the EVM execution environment.
+type ExecutionEnvironment struct {
+	// Machine code to be executed by the EVM.
 	code []byte
+}
+
+// MachineState represents the EVM state.
+type MachineState struct {
+	// Program counter.
+	pc int
 }
 
 // NewEVM creates and returns a new EVM instance.
@@ -45,8 +56,12 @@ func NewEVM(code []byte) IEVM {
 		stack:   NewStack(),
 		memory:  NewMemory(),
 		storage: NewStorage(),
-		pc:      0,
-		code:    code,
+		env: ExecutionEnvironment{
+			code: code,
+		},
+		state: MachineState{
+			pc: 0,
+		},
 	}
 }
 
