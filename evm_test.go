@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewEVM(t *testing.T) {
-	evm := NewEVM()
+	evm := NewEVM(nil)
 	if evm == nil {
 		t.Error("NewEVM() returned nil")
 	}
@@ -20,19 +20,19 @@ func TestStackOperationUnderflows(t *testing.T) {
 
 	// 2 operands arithmetic operation.
 	addOp := func(evm IEVM) error { return evm.Add() }
-	testStackOperation(t, addOp, ErrStackUnderflow, emptyStack, emptyStack, nil)
-	testStackOperation(t, addOp, ErrStackUnderflow, oneElementStack, emptyStack, nil)
+	testStackOperationWithNewEVM(t, addOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, addOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil)
 
 	// 3 operands arithmetic operation.
 	addModOp := func(evm IEVM) error { return evm.AddMod() }
-	testStackOperation(t, addModOp, ErrStackUnderflow, emptyStack, emptyStack, nil)
-	testStackOperation(t, addModOp, ErrStackUnderflow, oneElementStack, emptyStack, nil)
-	testStackOperation(t, addModOp, ErrStackUnderflow, twoElementsStack, emptyStack, nil)
+	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, twoElementsStack, emptyStack, nil, nil)
 
 	// 2 operands comparison operation.
 	eqOp := func(evm IEVM) error { return evm.Eq() }
-	testStackOperation(t, eqOp, ErrStackUnderflow, emptyStack, emptyStack, nil)
-	testStackOperation(t, eqOp, ErrStackUnderflow, oneElementStack, emptyStack, nil)
+	testStackOperationWithNewEVM(t, eqOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, eqOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil)
 }
 
 func TestStackOperationOnFullStack(t *testing.T) {
@@ -47,18 +47,21 @@ func TestStackOperationOnFullStack(t *testing.T) {
 	copy(expectedStack, initialStack)
 	expectedStack[1022] = 2
 
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
-// Helper function to test stack operations.
-func testStackOperation(t *testing.T, op func(evm IEVM) error, expectedErr error, initialStack []uint64, expectedStack []uint64, memory []byte) {
-	// Create a new EVM.
-	evm := NewEVM()
+// Helper function to test stack operations with a fresh new EVM.
+func testStackOperationWithNewEVM(t *testing.T, op func(evm IEVM) error, expectedErr error, initialStack []uint64, expectedStack []uint64, memory, code []byte) {
+	evm := NewEVM(code)
+	testStackOperationWithExistingEVM(t, evm, op, expectedErr, initialStack, expectedStack, memory)
+}
 
+// Helper function to test stack operations with an existing EVM.
+func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM) error, expectedErr error, initialStack []uint64, expectedStack []uint64, memory []byte) {
 	// Push initial elements to the stack.
-	for _, v := range initialStack {
+	for i, v := range initialStack {
 		if err := evm.Push(uint256.NewInt(v)); err != nil {
-			t.Errorf("Push() returned an unexpected error: %v", err)
+			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 		}
 	}
 

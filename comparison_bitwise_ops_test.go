@@ -9,11 +9,11 @@ func TestLt(t *testing.T) {
 
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 3, 2}
 	expectedStack = []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestGt(t *testing.T) {
@@ -21,11 +21,11 @@ func TestGt(t *testing.T) {
 
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 3, 2}
 	expectedStack = []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestSLt(t *testing.T) {
@@ -33,11 +33,11 @@ func TestSLt(t *testing.T) {
 
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 3, 2}
 	expectedStack = []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestSGt(t *testing.T) {
@@ -45,11 +45,11 @@ func TestSGt(t *testing.T) {
 
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 3, 2}
 	expectedStack = []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestEq(t *testing.T) {
@@ -57,11 +57,11 @@ func TestEq(t *testing.T) {
 
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 3, 3}
 	expectedStack = []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestIsZero(t *testing.T) {
@@ -69,11 +69,11 @@ func TestIsZero(t *testing.T) {
 
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 2, 0}
 	expectedStack = []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestAnd(t *testing.T) {
@@ -82,7 +82,7 @@ func TestAnd(t *testing.T) {
 	// Apply the operation: 3 | 2 or 0b11 & 0b10 = 0b10
 	// Stack: [1, 2, 3] -> [1, 2]
 	expectedStack := []uint64{1, 2}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestOr(t *testing.T) {
@@ -91,7 +91,7 @@ func TestOr(t *testing.T) {
 	// Apply the operation: 3 | 2 or 0b11 | 0b10 = 0b11
 	// Stack: [1, 2, 3] -> [1, 3]
 	expectedStack := []uint64{1, 3}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestXor(t *testing.T) {
@@ -100,7 +100,7 @@ func TestXor(t *testing.T) {
 	// Apply the operation: 3 ^ 2 or 0b11 ^ 0b10 = 0b1
 	// Stack: [1, 2, 3] -> [1, 1]
 	expectedStack := []uint64{1, 1}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestNot(t *testing.T) {
@@ -115,7 +115,7 @@ func TestNot(t *testing.T) {
 	// The representation of this number is 0xFFFFFFFFFFFFFFFC in hexadecimal.
 	// Stack: [1, 2, 0x0000000000000003] -> [1, 2, 0xFFFFFFFFFFFFFFFC]
 	expectedStack := []uint64{1, 2, 0xFFFFFFFFFFFFFFFC}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestByte(t *testing.T) {
@@ -131,23 +131,23 @@ func TestByte(t *testing.T) {
 	initialStack := []uint64{1, 2, 3, 0x11223344, 31}
 	// Stack: [1, 2, 3, 0x11223344, 31] -> [1, 2, 3, 0x44]
 	expectedStack := []uint64{1, 2, 3, 0x44}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 2, 3, 0x11223344, 28}
 	// Stack: [1, 2, 3, 0x11223344, 28] -> [1, 2, 3, 0x11]
 	expectedStack = []uint64{1, 2, 3, 0x11}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	initialStack = []uint64{1, 2, 3, 0x11223344, 27}
 	// Stack: [1, 2, 3, 0x11223344, 27] -> [1, 2, 3, 0x0]
 	expectedStack = []uint64{1, 2, 3, 0x0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 
 	// A last test just to check something.
 	initialStack = []uint64{1, 2, 3, 31}
 	// Stack: [1, 2, 3, 31] -> [1, 2, 3]
 	expectedStack = []uint64{1, 2, 3}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestShl(t *testing.T) {
@@ -156,7 +156,7 @@ func TestShl(t *testing.T) {
 	// Apply the operation: 3 << 2 or 0b11 << 0b10 = 0b1100
 	// Stack: [1, 2, 3] -> [1, 12]
 	expectedStack := []uint64{1, 12}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestShr(t *testing.T) {
@@ -165,7 +165,7 @@ func TestShr(t *testing.T) {
 	// Apply the operation: 3 >> 2 or 0b11 >> 0b10 = 0b0
 	// Stack: [1, 2, 3] -> [1, 0]
 	expectedStack := []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestSar(t *testing.T) {
@@ -174,5 +174,5 @@ func TestSar(t *testing.T) {
 	// Apply the operation: 3 >> 2 or 0b11 >> 0b10 = 0b0
 	// Stack: [1, 2, 3] -> [1, 0]
 	expectedStack := []uint64{1, 0}
-	testStackOperation(t, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }

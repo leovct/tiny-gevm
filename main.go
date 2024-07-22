@@ -3,6 +3,6 @@ package main
 import "fmt"
 
 func main() {
-	evm := NewEVM()
+	evm := NewEVM(nil)
 	fmt.Println("EVM:", evm)
 }

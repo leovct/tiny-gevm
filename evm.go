@@ -24,6 +24,9 @@ type IEVM interface {
 
 	// SHAA3 operations.
 	ISHA3Ops
+
+	// Stack operations.
+	IStackOps
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -31,14 +34,19 @@ type EVM struct {
 	stack   IStack
 	memory  IMemory
 	storage IStorage
+
+	pc   int
+	code []byte
 }
 
 // NewEVM creates and returns a new EVM instance.
-func NewEVM() IEVM {
+func NewEVM(code []byte) IEVM {
 	return &EVM{
 		stack:   NewStack(),
 		memory:  NewMemory(),
 		storage: NewStorage(),
+		pc:      0,
+		code:    code,
 	}
 }
 

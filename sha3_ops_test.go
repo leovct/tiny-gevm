@@ -19,5 +19,5 @@ func TestKeccak256(t *testing.T) {
 	hash := crypto.Keccak256(data)
 	value := new(uint256.Int).SetBytes([]byte(hash)).Uint64()
 	expectedStack := []uint64{1, value}
-	testStackOperation(t, op, nil, initialStack, expectedStack, memory)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
 }
