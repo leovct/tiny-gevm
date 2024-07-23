@@ -109,7 +109,8 @@ func TestSwap(t *testing.T) {
 		t.Errorf("Get() returned %v, want %v", value1.Uint64(), 2)
 	}
 
-	value2, err := s.Get(2)
+	var value2 *uint256.Int
+	value2, err = s.Get(2)
 	if err != nil {
 		t.Errorf("Get() returned an unexpected error: %v", err)
 	}
@@ -119,7 +120,7 @@ func TestSwap(t *testing.T) {
 
 	// Swap the 1st element. It should do nothing.
 	// The stack should be equal to [0x1, 0x2].
-	if err := s.Swap(1); err != nil {
+	if err = s.Swap(1); err != nil {
 		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, nil)
 	}
 
@@ -141,7 +142,7 @@ func TestSwap(t *testing.T) {
 
 	// Swap the 1st and 2nd elements.
 	// The stack should be equal to [0x2, 0x1].
-	if err := s.Swap(2); err != nil {
+	if err = s.Swap(2); err != nil {
 		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, nil)
 	}
 
