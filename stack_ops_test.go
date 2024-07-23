@@ -180,7 +180,7 @@ func testSwapOperation(t *testing.T, dupSize int, initialStack []uint64) {
 	expectedStack := make([]uint64, len(initialStack))
 	copy(expectedStack, initialStack)
 	index := len(initialStack) - (dupSize + 1)
-	expectedStack[0], expectedStack[index] = expectedStack[index], expectedStack[0]
+	expectedStack[len(initialStack)-1], expectedStack[index] = expectedStack[index], expectedStack[len(initialStack)-1]
 
 	// Test the dup operation.
 	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)

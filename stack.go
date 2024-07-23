@@ -93,7 +93,7 @@ func (s *Stack) Swap(i int) error {
 		return ErrStackIndexOutOfRange
 	}
 	index := len(s.data) - i
-	s.data[0], s.data[index] = s.data[index], s.data[0]
+	s.data[len(s.data)-1], s.data[index] = s.data[index], s.data[len(s.data)-1]
 	return nil
 }
 

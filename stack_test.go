@@ -101,9 +101,64 @@ func TestSwap(t *testing.T) {
 		t.Errorf("Push() returned an unexpected error: %v", err)
 	}
 
+	value1, err := s.Get(1)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value1.Uint64() != 2 {
+		t.Errorf("Get() returned %v, want %v", value1.Uint64(), 2)
+	}
+
+	value2, err := s.Get(2)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value2.Uint64() != 1 {
+		t.Errorf("Get() returned %v, want %v", value2.Uint64(), 1)
+	}
+
+	// Swap the 1st element. It should do nothing.
+	// The stack should be equal to [0x1, 0x2].
+	if err := s.Swap(1); err != nil {
+		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, nil)
+	}
+
+	value1, err = s.Get(1)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value1.Uint64() != 2 {
+		t.Errorf("Get() returned %v, want %v", value1.Uint64(), 2)
+	}
+
+	value2, err = s.Get(2)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value2.Uint64() != 1 {
+		t.Errorf("Get() returned %v, want %v", value2.Uint64(), 1)
+	}
+
 	// Swap the 1st and 2nd elements.
+	// The stack should be equal to [0x2, 0x1].
 	if err := s.Swap(2); err != nil {
 		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, nil)
+	}
+
+	value1, err = s.Get(1)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value1.Uint64() != 1 {
+		t.Errorf("Get() returned %v, want %v", value1.Uint64(), 1)
+	}
+
+	value2, err = s.Get(2)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value2.Uint64() != 2 {
+		t.Errorf("Get() returned %v, want %v", value2.Uint64(), 2)
 	}
 
 	// Swap an element that doesn't exist.
