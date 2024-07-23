@@ -81,6 +81,37 @@ func TestPopEmpty(t *testing.T) {
 	}
 }
 
+func TestSwap(t *testing.T) {
+	// Create an empty stack.
+	s := NewStack()
+
+	// Try to swap two elements of an empty stack.
+	if err := s.Swap(1); err == nil {
+		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, ErrEmptyStack)
+	}
+
+	// Push two elements to the stack.
+	// The stack should be equal to [0x1].
+	if err := s.Push(uint256.NewInt(1)); err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	// The stack should be equal to [0x1, 0x2].
+	if err := s.Push(uint256.NewInt(2)); err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	// Swap the 1st and 2nd elements.
+	if err := s.Swap(2); err != nil {
+		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, nil)
+	}
+
+	// Swap an element that doesn't exist.
+	if err := s.Swap(3); err == nil {
+		t.Errorf("Swap() returned an unexpected error: %v, wanted: %v", err, ErrStackIndexOutOfRange)
+	}
+}
+
 func TestGet(t *testing.T) {
 	// Create an empty stack.
 	s := NewStack()

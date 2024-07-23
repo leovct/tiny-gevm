@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/holiman/uint256"
 )
@@ -12,8 +11,12 @@ var (
 	ErrInvalidPushSize = errors.New("invalid push size")
 	// ErrPushSizeExceedsCodeSize is returned when trying the push size exceeds the code size.
 	ErrPushSizeExceedsCodeSize = errors.New("push size exceeds code size")
+
 	// ErrDupSize is returned when the dup size is outside the valid range of 1 to 16.
 	ErrInvalidDupSize = errors.New("invalid dup size")
+
+	// ErrInvalidSwapSize is returned when the swap size is outside the valid range of 1 to 16.
+	ErrInvalidSwapSize = errors.New("invalid swap size")
 )
 
 // IStackOps defines stack operations for the EVM.
@@ -22,6 +25,7 @@ var (
 type IStackOps interface {
 	IPushOps
 	IDupOps
+	ISwapOps
 }
 
 // IPushOps defines push operations on the EVM stack.
@@ -402,12 +406,134 @@ func (e *EVM) dupN(n int) error {
 
 	value, err := e.stack.Get(n)
 	if err != nil {
-		fmt.Println("fail here")
 		return err
 	}
 	if err := e.stack.Push(value); err != nil {
-		fmt.Println("fail there")
 		return err
 	}
 	return nil
+}
+
+// ISwapOps defines swap operation on the EVM stack.
+type ISwapOps interface {
+	// Swaplicate 1st stack item.
+	Swap1() error
+
+	// Swaplicate 2nd stack item.
+	Swap2() error
+
+	// Swaplicate 3rd stack item.
+	Swap3() error
+
+	// Swaplicate 4th stack item.
+	Swap4() error
+
+	// Swaplicate 5th stack item.
+	Swap5() error
+
+	// Swaplicate 6th stack item.
+	Swap6() error
+
+	// Swaplicate 7th stack item.
+	Swap7() error
+
+	// Swaplicate 8th stack item.
+	Swap8() error
+
+	// Swaplicate 9th stack item.
+	Swap9() error
+
+	// Swaplicate 10th stack item.
+	Swap10() error
+
+	// Swaplicate 11th stack item.
+	Swap11() error
+
+	// Swaplicate 12th stack item.
+	Swap12() error
+
+	// Swaplicate 13th stack item.
+	Swap13() error
+
+	// Swaplicate 14th stack item.
+	Swap14() error
+
+	// Swaplicate 15th stack item.
+	Swap15() error
+
+	// Swaplicate 16th stack item.
+	Swap16() error
+}
+
+func (e *EVM) Swap1() error {
+	return e.swapN(2)
+}
+
+func (e *EVM) Swap2() error {
+	return e.swapN(3)
+}
+
+func (e *EVM) Swap3() error {
+	return e.swapN(4)
+}
+
+func (e *EVM) Swap4() error {
+	return e.swapN(5)
+}
+
+func (e *EVM) Swap5() error {
+	return e.swapN(6)
+}
+
+func (e *EVM) Swap6() error {
+	return e.swapN(7)
+}
+
+func (e *EVM) Swap7() error {
+	return e.swapN(8)
+}
+
+func (e *EVM) Swap8() error {
+	return e.swapN(9)
+}
+
+func (e *EVM) Swap9() error {
+	return e.swapN(10)
+}
+
+func (e *EVM) Swap10() error {
+	return e.swapN(11)
+}
+
+func (e *EVM) Swap11() error {
+	return e.swapN(12)
+}
+
+func (e *EVM) Swap12() error {
+	return e.swapN(13)
+}
+
+func (e *EVM) Swap13() error {
+	return e.swapN(14)
+}
+
+func (e *EVM) Swap14() error {
+	return e.swapN(15)
+}
+
+func (e *EVM) Swap15() error {
+	return e.swapN(16)
+}
+
+func (e *EVM) Swap16() error {
+	return e.swapN(17)
+}
+
+func (e *EVM) swapN(n int) error {
+	if n < 2 || n > 17 {
+		// Unreachable in theory.
+		// This step should never fail because the EVM should only expose Swap1() to Swap16().
+		return ErrInvalidSwapSize
+	}
+	return e.stack.Swap(n)
 }

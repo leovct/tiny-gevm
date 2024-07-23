@@ -37,6 +37,10 @@ type IStack interface {
 	// If the stack is empty, it returns a zero-value 32-byte array and an error.
 	Get(i int) (*uint256.Int, error)
 
+	// Exchange the first and i-th stack item.
+	// If the stack is empty, it returns an error.
+	Swap(i int) error
+
 	// Size returns the number of elements currently on the stack.
 	Size() int
 }
@@ -79,6 +83,18 @@ func (s *Stack) Get(i int) (*uint256.Int, error) {
 	index := len(s.data) - i
 	element := s.data[index]
 	return &element, nil
+}
+
+func (s *Stack) Swap(i int) error {
+	if len(s.data) == 0 {
+		return ErrEmptyStack
+	}
+	if len(s.data) < i {
+		return ErrStackIndexOutOfRange
+	}
+	index := len(s.data) - i
+	s.data[0], s.data[index] = s.data[index], s.data[0]
+	return nil
 }
 
 func (s *Stack) Size() int {

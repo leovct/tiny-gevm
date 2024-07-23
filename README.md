@@ -75,6 +75,10 @@ type IStack interface {
 	// If the stack is empty, it returns a zero-value 32-byte array and an error.
 	Get(i int) (*uint256.Int, error)
 
+	// Exchange the first and i-th stack item.
+	// If the stack is empty, it returns an error.
+	Swap(i int) error
+
 	// Size returns the number of elements currently on the stack.
 	Size() int
 }

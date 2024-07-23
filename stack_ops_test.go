@@ -151,3 +151,37 @@ func testDupOperation(t *testing.T, dupSize int, initialStack []uint64) {
 	// Test the dup operation.
 	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
+
+func TestSwapN(t *testing.T) {
+	initialStack := []uint64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
+	for i := 1; i <= 16; i++ {
+		t.Run(fmt.Sprintf("Swap%d", i), func(t *testing.T) {
+			testSwapOperation(t, i, initialStack)
+		})
+	}
+}
+
+func testSwapOperation(t *testing.T, dupSize int, initialStack []uint64) {
+	// Generate the SWAP opcode function dynamically.
+	op := func(evm IEVM) error {
+		methodName := fmt.Sprintf("Swap%d", dupSize)
+		method := reflect.ValueOf(evm).MethodByName(methodName)
+		if !method.IsValid() {
+			return fmt.Errorf("method %s not found", methodName)
+		}
+		results := method.Call(nil)
+		if len(results) > 0 && !results[0].IsNil() {
+			return results[0].Interface().(error)
+		}
+		return nil
+	}
+
+	// Swap the elements.
+	expectedStack := make([]uint64, len(initialStack))
+	copy(expectedStack, initialStack)
+	index := len(initialStack) - (dupSize + 1)
+	expectedStack[0], expectedStack[index] = expectedStack[index], expectedStack[0]
+
+	// Test the dup operation.
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+}
