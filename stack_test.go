@@ -81,6 +81,58 @@ func TestPopEmpty(t *testing.T) {
 	}
 }
 
+func TestGet(t *testing.T) {
+	// Create an empty stack.
+	s := NewStack()
+
+	// Try to get an element from the empty stack.
+	value0, err := s.Get(1)
+	if err == nil {
+		t.Errorf("Get() returned an unexpected error: %v, wanted: %v", err, ErrEmptyStack)
+	}
+	if value0 != nil {
+		t.Errorf("Get() returned %v, want %v", value0, nil)
+	}
+
+	// Push two elements to the stack.
+	// The stack should be equal to [0x1].
+	if err = s.Push(uint256.NewInt(1)); err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	// The stack should be equal to [0x1, 0x2].
+	if err = s.Push(uint256.NewInt(2)); err != nil {
+		t.Errorf("Push() returned an unexpected error: %v", err)
+	}
+
+	// Get the first element.
+	value1, err := s.Get(1)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value1.Uint64() != 2 {
+		t.Errorf("Get() returned %v, want %v", value1.Uint64(), 2)
+	}
+
+	// Get the second element.
+	value2, err := s.Get(2)
+	if err != nil {
+		t.Errorf("Get() returned an unexpected error: %v", err)
+	}
+	if value2.Uint64() != 1 {
+		t.Errorf("Get() returned %v, want %v", value2.Uint64(), 1)
+	}
+
+	// Get an index out of range.
+	value3, err := s.Get(3)
+	if err == nil {
+		t.Errorf("Get() returned an unexpected error: %v, wanted: %v", err, ErrStackIndexOutOfRange)
+	}
+	if value3 != nil {
+		t.Errorf("Get() returned %v, want %v", value3, nil)
+	}
+}
+
 func TestSize(t *testing.T) {
 	// Create an empty stack.
 	s := NewStack()

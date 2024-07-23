@@ -14,6 +14,11 @@ var (
 	ErrStackUnderflow = errors.New("stack underflow")
 	// ErrStackOverflow is returned when trying to push to a full stack.
 	ErrStackOverflow = errors.New("stack overflow")
+
+	// ErrEmptyStack is returned when trying to access an element from an empty stack.
+	ErrEmptyStack = errors.New("empty stack")
+	// ErrStackIndexOutOfRange is returned when trying to access an element from a stack that doesn't exist.
+	ErrStackIndexOutOfRange = errors.New("stack index out of range")
 )
 
 // IStack defines the methods that a stack implementation should have.
@@ -25,6 +30,12 @@ type IStack interface {
 	// Pop removes and returns the top element from the stack.
 	// If the stack is empty, it returns a zero-value 32-byte array and an error.
 	Pop() (*uint256.Int, error)
+
+	// Get returns the i-th element from the stack without poping it.
+	// The index is 1-based, where 1 refers to the top of the stack (last element).
+	// For example, Get(1) returns the top element, Get(2) returns the second from the top, and so on.
+	// If the stack is empty, it returns a zero-value 32-byte array and an error.
+	Get(i int) (*uint256.Int, error)
 
 	// Size returns the number of elements currently on the stack.
 	Size() int
@@ -55,6 +66,18 @@ func (s *Stack) Pop() (*uint256.Int, error) {
 	index := len(s.data) - 1
 	element := s.data[index]
 	s.data = s.data[:index]
+	return &element, nil
+}
+
+func (s *Stack) Get(i int) (*uint256.Int, error) {
+	if len(s.data) == 0 {
+		return nil, ErrEmptyStack
+	}
+	if len(s.data) < i {
+		return nil, ErrStackIndexOutOfRange
+	}
+	index := len(s.data) - i
+	element := s.data[index]
 	return &element, nil
 }
 

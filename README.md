@@ -69,6 +69,12 @@ type IStack interface {
 	// If the stack is empty, it returns a zero-value 32-byte array and an error.
 	Pop() (*uint256.Int, error)
 
+	// Get returns the i-th element from the stack without poping it.
+	// The index is 1-based, where 1 refers to the top of the stack (last element).
+	// For example, Get(1) returns the top element, Get(2) returns the second from the top, and so on.
+	// If the stack is empty, it returns a zero-value 32-byte array and an error.
+	Get(i int) (*uint256.Int, error)
+
 	// Size returns the number of elements currently on the stack.
 	Size() int
 }

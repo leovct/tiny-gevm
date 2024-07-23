@@ -62,7 +62,7 @@ func testPushOperation(t *testing.T, pushSize int, initialStack []uint64) {
 		value2[i] = 0xAA
 	}
 
-	// Create a fresh new EVM.
+	// Create a new EVM.
 	code := append([]byte{0x60}, append(value1, append([]byte{0x60}, value2...)...)...)
 	evm := NewEVM(code)
 
@@ -90,4 +90,64 @@ func testPushOperation(t *testing.T, pushSize int, initialStack []uint64) {
 	value2ToUint64 := new(uint256.Int).SetBytes(value2).Uint64()
 	expectedStack = append(initialStack, value2ToUint64)
 	testStackOperationWithExistingEVM(t, evm, op, nil, initialStack, expectedStack, nil)
+}
+
+func TestDupN(t *testing.T) {
+	initialStack := []uint64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
+	for i := 1; i <= 16; i++ {
+		t.Run(fmt.Sprintf("Dup%d", i), func(t *testing.T) {
+			testDupOperation(t, i, initialStack)
+		})
+	}
+}
+
+func TestDupOnEmptyStack(t *testing.T) {
+	op := func(evm IEVM) error { return evm.Dup1() }
+	initialStack := []uint64{}
+	expectedStack := []uint64{}
+	testStackOperationWithNewEVM(t, op, ErrEmptyStack, initialStack, expectedStack, nil, nil)
+}
+
+func TestDupOnFullStack(t *testing.T) {
+	// Create a new EVM.
+	evm := NewEVM(nil)
+
+	// Push elements to the stack until its full.
+	for i := 0; i < 1024; i++ {
+		if err := evm.Push(uint256.NewInt(uint64(i))); err != nil {
+			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
+			break
+		}
+	}
+
+	// Try to duplicate the first element.
+	if err := evm.Dup1(); err == nil {
+		t.Errorf("Operation returned an unexpected error: %v, wanted: %v", err, ErrStackOverflow)
+	}
+}
+
+func testDupOperation(t *testing.T, dupSize int, initialStack []uint64) {
+	// Generate the DUP opcode function dynamically.
+	op := func(evm IEVM) error {
+		methodName := fmt.Sprintf("Dup%d", dupSize)
+		method := reflect.ValueOf(evm).MethodByName(methodName)
+		if !method.IsValid() {
+			return fmt.Errorf("method %s not found", methodName)
+		}
+		results := method.Call(nil)
+		if len(results) > 0 && !results[0].IsNil() {
+			return results[0].Interface().(error)
+		}
+		return nil
+	}
+
+	// Get the element to duplicate.
+	index := len(initialStack) - dupSize
+	value := initialStack[index]
+
+	// Compute the expected stack.
+	expectedStack := append(initialStack, value)
+
+	// Test the dup operation.
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }

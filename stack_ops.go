@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/holiman/uint256"
 )
@@ -11,12 +12,20 @@ var (
 	ErrInvalidPushSize = errors.New("invalid push size")
 	// ErrPushSizeExceedsCodeSize is returned when trying the push size exceeds the code size.
 	ErrPushSizeExceedsCodeSize = errors.New("push size exceeds code size")
+	// ErrDupSize is returned when the dup size is outside the valid range of 1 to 16.
+	ErrInvalidDupSize = errors.New("invalid dup size")
 )
 
 // IStackOps defines stack operations for the EVM.
 // All operations take their values from code and push the result to the stack.
 // All methods return an error if there are not enough elements in code or two many elements in the stack.
 type IStackOps interface {
+	IPushOps
+	IDupOps
+}
+
+// IPushOps defines push operations on the EVM stack.
+type IPushOps interface {
 	// Push0 places the value zero on the stack.
 	Push0() error
 
@@ -266,5 +275,139 @@ func (e *EVM) pushN(n int) error {
 		return err
 	}
 	e.state.pc += n + 1
+	return nil
+}
+
+// IDupOps defines duplication operation on the EVM stack.
+type IDupOps interface {
+	// Duplicate 1st stack item.
+	Dup1() error
+
+	// Duplicate 2nd stack item.
+	Dup2() error
+
+	// Duplicate 3rd stack item.
+	Dup3() error
+
+	// Duplicate 4th stack item.
+	Dup4() error
+
+	// Duplicate 5th stack item.
+	Dup5() error
+
+	// Duplicate 6th stack item.
+	Dup6() error
+
+	// Duplicate 7th stack item.
+	Dup7() error
+
+	// Duplicate 8th stack item.
+	Dup8() error
+
+	// Duplicate 9th stack item.
+	Dup9() error
+
+	// Duplicate 10th stack item.
+	Dup10() error
+
+	// Duplicate 11th stack item.
+	Dup11() error
+
+	// Duplicate 12th stack item.
+	Dup12() error
+
+	// Duplicate 13th stack item.
+	Dup13() error
+
+	// Duplicate 14th stack item.
+	Dup14() error
+
+	// Duplicate 15th stack item.
+	Dup15() error
+
+	// Duplicate 16th stack item.
+	Dup16() error
+}
+
+func (e *EVM) Dup1() error {
+	return e.dupN(1)
+}
+
+func (e *EVM) Dup2() error {
+	return e.dupN(2)
+}
+
+func (e *EVM) Dup3() error {
+	return e.dupN(3)
+}
+
+func (e *EVM) Dup4() error {
+	return e.dupN(4)
+}
+
+func (e *EVM) Dup5() error {
+	return e.dupN(5)
+}
+
+func (e *EVM) Dup6() error {
+	return e.dupN(6)
+}
+
+func (e *EVM) Dup7() error {
+	return e.dupN(7)
+}
+
+func (e *EVM) Dup8() error {
+	return e.dupN(8)
+}
+
+func (e *EVM) Dup9() error {
+	return e.dupN(9)
+}
+
+func (e *EVM) Dup10() error {
+	return e.dupN(10)
+}
+
+func (e *EVM) Dup11() error {
+	return e.dupN(11)
+}
+
+func (e *EVM) Dup12() error {
+	return e.dupN(12)
+}
+
+func (e *EVM) Dup13() error {
+	return e.dupN(13)
+}
+
+func (e *EVM) Dup14() error {
+	return e.dupN(14)
+}
+
+func (e *EVM) Dup15() error {
+	return e.dupN(15)
+}
+
+func (e *EVM) Dup16() error {
+	return e.dupN(16)
+}
+
+func (e *EVM) dupN(n int) error {
+	if n < 1 || n > 16 {
+		// Unreachable in theory.
+		// This step should never fail because the EVM should only expose Dup1() to Dup16().
+		return ErrInvalidDupSize
+	}
+
+	value, err := e.stack.Get(n)
+	if err != nil {
+		fmt.Println("fail here")
+		return err
+	}
+	if err := e.stack.Push(value); err != nil {
+		fmt.Println("fail there")
+		return err
+	}
 	return nil
 }
