@@ -26,9 +26,16 @@ type IStackOps interface {
 	// Pop an item from the stack.
 	Pop() error
 
-	// MLoad reads a word from memory and pushes it to the stack.
-	// The offset is read from the top of the stack.
+	// MLoad loads a word from memory.
+	// It pops an item from the stack, this is the offset.
+	// Then it reads the word from memory at the given offset.
+	// Finally, it pushes the result to the top of the stack.
 	MLoad() error
+
+	// MStore saves a word to memory.
+	// It pops two items from the stack, offset and value.
+	// Then it writes the word at the given offset in the memory.
+	MStore() error
 
 	IPushOps
 	IDupOps
@@ -48,11 +55,30 @@ func (e *EVM) MLoad() error {
 	}
 
 	// Load memory from memory at given offset.
-	word := e.memory.Load(int(offset.Uint64()))
+	word := e.memory.Load32(int(offset.Uint64()))
 
 	// Store word at the top of the stack.
 	value := new(uint256.Int).SetBytes(word)
 	return e.stack.Push(value)
+}
+
+func (e *EVM) MStore() error {
+	// Load offset from the stack.
+	offset, err := e.stack.Pop()
+	if err != nil {
+		return err
+	}
+
+	// Load word from the stack.
+	var value *uint256.Int
+	value, err = e.stack.Pop()
+	if err != nil {
+		return err
+	}
+
+	// Store word at the given offset in memory.
+	e.memory.Store32(value.Bytes32(), int(offset.Uint64()))
+	return nil
 }
 
 // IPushOps defines push operations on the EVM stack.
