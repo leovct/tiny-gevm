@@ -11,6 +11,9 @@ type IMemory interface {
 	// It handles cases where the requested region may extend beyond the current memory size.
 	// Returns a byte slice of length 'size', zero-padded if necessary.
 	Access(offset, size int) []byte
+
+	// Load a word (32 bytes) from memory at the given offset.
+	Load(offset int) []byte
 }
 
 // Memory represents a byte-addressable memory structure.
@@ -50,4 +53,8 @@ func (m *Memory) Access(offset, size int) []byte {
 
 	// Handle partial out-of-bounds access.
 	return m.data[offset : offset+size]
+}
+
+func (m *Memory) Load(offset int) []byte {
+	return m.Access(offset, 32)
 }
