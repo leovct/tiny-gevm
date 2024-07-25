@@ -92,10 +92,10 @@ type IMemory interface {
 	// the memory is automatically expanded to accommodate the new data.
 	Store(value []byte, offset int)
 
-	// Access retrieves a slice of memory starting at the given offset with the specified size.
+	// Load retrieves a slice of memory starting at the given offset with the specified size.
 	// It handles cases where the requested region may extend beyond the current memory size.
 	// Returns a byte slice of length 'size', zero-padded if necessary.
-	Access(offset, size int) []byte
+	Load(offset, size int) []byte
 
 	// Load a word (32 bytes) from memory at the given offset.
 	LoadWord(offset int) []byte
