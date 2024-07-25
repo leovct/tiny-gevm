@@ -66,7 +66,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 	}
 
 	// Load initial elements to the memory.
-	evm.Store(memory, 0)
+	evm.HelperStore(memory, 0)
 
 	// Perform the operation.
 	if err := op(evm); err != expectedErr {
