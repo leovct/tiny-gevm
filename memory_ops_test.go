@@ -24,6 +24,11 @@ func TestMLoad(t *testing.T) {
 	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
 }
 
+func TestMLoadOnEmptyStack(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MLoad() }
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil)
+}
+
 func TestMStore(t *testing.T) {
 	op := func(evm IEVM) error { return evm.MStore() }
 
@@ -46,4 +51,15 @@ func TestMStore(t *testing.T) {
 	// - Memory: [111, 444, 333]
 	expectedStack := []uint64{3, 2}
 	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
+}
+
+func TestMStoreOnEmptyStack(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MStore() }
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil)
+}
+
+func TestMStoreOnOneElementStack(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MStore() }
+	initialStack := []uint64{1}
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil)
 }
