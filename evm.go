@@ -9,8 +9,6 @@ type IEVM interface {
 	// Stack operations.
 	// Push an item to the stack.
 	Push(*uint256.Int) error
-	// Pop an item from the stack.
-	Pop() (*uint256.Int, error)
 
 	// Memory operations.
 	// Write byte slice to memory at the specified offset.
@@ -67,10 +65,6 @@ func NewEVM(code []byte) IEVM {
 
 func (e *EVM) Push(value *uint256.Int) error {
 	return e.stack.Push(value)
-}
-
-func (e *EVM) Pop() (*uint256.Int, error) {
-	return e.stack.Pop()
 }
 
 func (e *EVM) Store(value []byte, offset int) {

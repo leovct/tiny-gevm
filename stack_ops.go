@@ -23,9 +23,16 @@ var (
 // All operations take their values from code and push the result to the stack.
 // All methods return an error if there are not enough elements in code or two many elements in the stack.
 type IStackOps interface {
+	// Pop an item from the stack.
+	Pop() (*uint256.Int, error)
+
 	IPushOps
 	IDupOps
 	ISwapOps
+}
+
+func (e *EVM) Pop() (*uint256.Int, error) {
+	return e.stack.Pop()
 }
 
 // IPushOps defines push operations on the EVM stack.
