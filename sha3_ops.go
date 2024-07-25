@@ -17,7 +17,7 @@ type ISHA3Ops interface {
 func (e *EVM) Keccak256() error {
 	op := func(operands ...*uint256.Int) *uint256.Int {
 		offset, size := operands[0], operands[1]
-		data := e.memory.Access(int(offset.Uint64()), int(size.Uint64()))
+		data := e.memory.Load(int(offset.Uint64()), int(size.Uint64()))
 		hash := crypto.Keccak256(data)
 		return new(uint256.Int).SetBytes(hash)
 	}

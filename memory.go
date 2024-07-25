@@ -7,10 +7,10 @@ type IMemory interface {
 	// the memory is automatically expanded to accommodate the new data.
 	Store(value []byte, offset int)
 
-	// Access retrieves a slice of memory starting at the given offset with the specified size.
+	// Load retrieves a slice of memory starting at the given offset with the specified size.
 	// It handles cases where the requested region may extend beyond the current memory size.
 	// Returns a byte slice of length 'size', zero-padded if necessary.
-	Access(offset, size int) []byte
+	Load(offset, size int) []byte
 
 	// Load a word (32 bytes) from memory at the given offset.
 	LoadWord(offset int) []byte
@@ -40,7 +40,7 @@ func (m *Memory) Store(value []byte, offset int) {
 	copy(m.data[offset:], value)
 }
 
-func (m *Memory) Access(offset, size int) []byte {
+func (m *Memory) Load(offset, size int) []byte {
 	// Return a zero-filled slice if memory is empty or offset is out of bounds.
 	if len(m.data) == 0 || offset >= len(m.data) {
 		return make([]byte, size)
@@ -59,7 +59,7 @@ func (m *Memory) Access(offset, size int) []byte {
 }
 
 func (m *Memory) LoadWord(offset int) []byte {
-	return m.Access(offset, 32)
+	return m.Load(offset, 32)
 }
 
 func (m *Memory) StoreWord(word [32]byte, offset int) {
