@@ -98,10 +98,10 @@ type IMemory interface {
 	Access(offset, size int) []byte
 
 	// Load a word (32 bytes) from memory at the given offset.
-	Load32(offset int) []byte
+	LoadWord(offset int) []byte
 
 	// Store a word (32 bytes) to memory at the given offset.
-	Store32(word [32]byte, offset int)
+	StoreWord(word [32]byte, offset int)
 }
 
 // Memory represents a byte-addressable memory structure.

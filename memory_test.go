@@ -179,7 +179,7 @@ func TestAccessPartial0utOfBonds(t *testing.T) {
 	}
 }
 
-func TestLoad32(t *testing.T) {
+func TestLoadWord(t *testing.T) {
 	// Create an empty memory.
 	m := NewMemory()
 
@@ -194,7 +194,7 @@ func TestLoad32(t *testing.T) {
 	m.Store(data, 0)
 
 	// Load the first word (32 bytes) from memory.
-	word1 := m.Load32(0)
+	word1 := m.LoadWord(0)
 	expectedWord1 := []byte{
 		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, // 10 elements
 		0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14,
@@ -206,7 +206,7 @@ func TestLoad32(t *testing.T) {
 	}
 
 	// Load the second word (32 bytes) from memory.
-	word2 := m.Load32(32)
+	word2 := m.LoadWord(32)
 	expectedWord2 := []byte{
 		0x21, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -218,7 +218,7 @@ func TestLoad32(t *testing.T) {
 	}
 }
 
-func TestStore32(t *testing.T) {
+func TestStoreWord(t *testing.T) {
 	// Create an empty memory.
 	m := NewMemory()
 
@@ -227,31 +227,31 @@ func TestStore32(t *testing.T) {
 	word1 := uint256.NewInt(333).Bytes32()
 	word2 := uint256.NewInt(222).Bytes32()
 	word3 := uint256.NewInt(111).Bytes32()
-	m.Store32(word1, 0)
-	m.Store32(word2, 32*2)
-	m.Store32(word3, 32*3)
+	m.StoreWord(word1, 0)
+	m.StoreWord(word2, 32*2)
+	m.StoreWord(word3, 32*3)
 
 	// Load the first word from memory.
-	expectedWord1 := m.Load32(0)
+	expectedWord1 := m.LoadWord(0)
 	if !bytes.Equal(word1[:], expectedWord1) {
 		t.Errorf("Load() at offset 32 returned word %v, wanted %v", word1, expectedWord1)
 	}
 
 	// Load empty word from memory.
-	expectedEmptyWord := m.Load32(32)
+	expectedEmptyWord := m.LoadWord(32)
 	var emptyWord [32]byte
 	if !bytes.Equal(emptyWord[:], expectedEmptyWord) {
 		t.Errorf("Load() at offset 32 returned word %v, wanted empty word %v", emptyWord, expectedEmptyWord)
 	}
 
 	// Load the second word from memory.
-	expectedWord2 := m.Load32(32 * 2)
+	expectedWord2 := m.LoadWord(32 * 2)
 	if !bytes.Equal(word2[:], expectedWord2) {
 		t.Errorf("Load() at offset 32*2 returned word %v, wanted %v", word2, expectedWord2)
 	}
 
 	// Load the third word from memory.
-	expectedWord3 := m.Load32(32 * 3)
+	expectedWord3 := m.LoadWord(32 * 3)
 	if !bytes.Equal(word3[:], expectedWord3) {
 		t.Errorf("Load() at offset 32*3 returned word %v, wanted %v", word3, expectedWord3)
 	}

@@ -26,7 +26,7 @@ func (e *EVM) MLoad() error {
 	}
 
 	// Load memory from memory at given offset.
-	word := e.memory.Load32(int(offset.Uint64()))
+	word := e.memory.LoadWord(int(offset.Uint64()))
 
 	// Store word at the top of the stack.
 	value := new(uint256.Int).SetBytes(word)
@@ -49,6 +49,6 @@ func (e *EVM) MStore() error {
 
 	// Store word at the given offset in memory.
 	word := value.Bytes32()
-	e.memory.Store32(word, int(offset.Uint64()))
+	e.memory.StoreWord(word, int(offset.Uint64()))
 	return nil
 }
