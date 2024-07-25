@@ -60,7 +60,7 @@ func testStackOperationWithNewEVM(t *testing.T, op func(evm IEVM) error, expecte
 func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM) error, expectedErr error, initialStack []uint64, expectedStack []uint64, memory []byte) {
 	// Push initial elements to the stack.
 	for i, v := range initialStack {
-		if err := evm.Push(uint256.NewInt(v)); err != nil {
+		if err := evm.HelperPush(uint256.NewInt(v)); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 		}
 	}
@@ -75,7 +75,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 
 	// Check the stack after the operation.
 	for i := len(expectedStack) - 1; i >= 0; i-- {
-		popped, err := evm.Pop()
+		popped, err := evm.HelperPop()
 		if err != nil {
 			t.Errorf("Pop() returned an unexpected error: %v", err)
 		}

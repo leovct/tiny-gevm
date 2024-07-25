@@ -7,8 +7,11 @@ import (
 // IEVM defines the methods that an Ethereum Virtual Machine implementation should have.
 type IEVM interface {
 	// Stack operations.
+	// TODO: Get rid of these two functions if possible.
 	// Push an item to the stack.
-	Push(*uint256.Int) error
+	HelperPush(*uint256.Int) error
+	// Pop an item of the stack.
+	HelperPop() (*uint256.Int, error)
 
 	// Memory operations.
 	// Write byte slice to memory at the specified offset.
@@ -63,7 +66,11 @@ func NewEVM(code []byte) IEVM {
 	}
 }
 
-func (e *EVM) Push(value *uint256.Int) error {
+func (e *EVM) HelperPop() (*uint256.Int, error) {
+	return e.stack.Pop()
+}
+
+func (e *EVM) HelperPush(value *uint256.Int) error {
 	return e.stack.Push(value)
 }
 

@@ -8,6 +8,13 @@ import (
 	"github.com/holiman/uint256"
 )
 
+func TestPop(t *testing.T) {
+	op := func(evm IEVM) error { return evm.Pop() }
+	initialStack := []uint64{1, 2, 3}
+	expectedStack := []uint64{1, 2}
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+}
+
 func TestPush0(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Push0() }
 	initialStack := []uint64{1, 2, 3}
@@ -41,7 +48,7 @@ func TestPushOnFullStack(t *testing.T) {
 
 	// Push elements to the stack until its full.
 	for i := 0; i < 1024; i++ {
-		if err := evm.Push(uint256.NewInt(uint64(i))); err != nil {
+		if err := evm.HelperPush(uint256.NewInt(uint64(i))); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 			break
 		}
@@ -114,7 +121,7 @@ func TestDupOnFullStack(t *testing.T) {
 
 	// Push elements to the stack until its full.
 	for i := 0; i < 1024; i++ {
-		if err := evm.Push(uint256.NewInt(uint64(i))); err != nil {
+		if err := evm.HelperPush(uint256.NewInt(uint64(i))); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 			break
 		}
