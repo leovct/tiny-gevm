@@ -12,10 +12,11 @@ Inspired by [gevm](https://github.com/Jesserc/gevm) by [Jesserc](https://twitter
 // IEVM defines the methods that an Ethereum Virtual Machine implementation should have.
 type IEVM interface {
 	// Stack operations.
+	// TODO: Get rid of these two functions if possible.
 	// Push an item to the stack.
-	Push(*uint256.Int) error
-	// Pop an item from the stack.
-	Pop() (*uint256.Int, error)
+	HelperPush(*uint256.Int) error
+	// Pop an item of the stack.
+	HelperPop() (*uint256.Int, error)
 
 	// Memory operations.
 	// Write byte slice to memory at the specified offset.
@@ -103,6 +104,12 @@ type IMemory interface {
 	// It handles cases where the requested region may extend beyond the current memory size.
 	// Returns a byte slice of length 'size', zero-padded if necessary.
 	Access(offset, size int) []byte
+
+	// Load a word (32 bytes) from memory at the given offset.
+	Load32(offset int) []byte
+
+	// Store a word (32 bytes) to memory at the given offset.
+	Store32(word [32]byte, offset int)
 }
 
 // Memory represents a byte-addressable memory structure.
