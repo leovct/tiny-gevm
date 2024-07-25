@@ -11,28 +11,20 @@ Inspired by [gevm](https://github.com/Jesserc/gevm) by [Jesserc](https://twitter
 ```go
 // IEVM defines the methods that an Ethereum Virtual Machine implementation should have.
 type IEVM interface {
-	// Stack operations.
-	// TODO: Get rid of these two functions if possible.
+	IArithmeticOps
+	IComparisonAndBitwiseOps
+	ISHA3Ops
+	IStackOps
+	IMemoryOps
+
+	// Helper methods.
+	// TODO: Get rid of these methods if possible.
 	// Push an item to the stack.
 	HelperPush(*uint256.Int) error
 	// Pop an item of the stack.
 	HelperPop() (*uint256.Int, error)
-
-	// Memory operations.
 	// Write byte slice to memory at the specified offset.
-	Store(value []byte, offset int)
-
-	// Arithmetic operations.
-	IArithmeticOps
-
-	// Comparison and bitwise logic operations.
-	IComparisonAndBitwiseOps
-
-	// SHAA3 operations.
-	ISHA3Ops
-
-	// Stack operations.
-	IStackOps
+	HelperStore(value []byte, offset int)
 }
 
 // EVM represents an Ethereum Virtual Machine.

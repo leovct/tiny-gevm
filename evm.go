@@ -10,6 +10,7 @@ type IEVM interface {
 	IComparisonAndBitwiseOps
 	ISHA3Ops
 	IStackOps
+	IMemoryOps
 
 	// Helper methods.
 	// TODO: Get rid of these methods if possible.
