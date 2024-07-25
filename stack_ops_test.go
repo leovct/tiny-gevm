@@ -15,6 +15,24 @@ func TestPop(t *testing.T) {
 	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
 }
 
+func TestMLoad(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MLoad() }
+
+	// Stack
+	offset := 32 // read the second word
+	initialStack := []uint64{3, 2, uint64(offset)}
+
+	// Memory
+	word1 := uint256.NewInt(333).Bytes32()
+	word2 := uint256.NewInt(222).Bytes32()
+	word3 := uint256.NewInt(111).Bytes32()
+	var memory []byte
+	memory = append(append(append(memory, word1[:]...), word2[:]...), word3[:]...)
+
+	expectedStack := []uint64{3, 2, 222}
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
+}
+
 func TestPush0(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Push0() }
 	initialStack := []uint64{1, 2, 3}
