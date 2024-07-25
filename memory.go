@@ -13,7 +13,10 @@ type IMemory interface {
 	Access(offset, size int) []byte
 
 	// Load a word (32 bytes) from memory at the given offset.
-	Load(offset int) []byte
+	Load32(offset int) []byte
+
+	// Store a word (32 bytes) to memory at the given offset.
+	Store32(word [32]byte, offset int)
 }
 
 // Memory represents a byte-addressable memory structure.
@@ -55,6 +58,10 @@ func (m *Memory) Access(offset, size int) []byte {
 	return m.data[offset : offset+size]
 }
 
-func (m *Memory) Load(offset int) []byte {
+func (m *Memory) Load32(offset int) []byte {
 	return m.Access(offset, 32)
+}
+
+func (m *Memory) Store32(word [32]byte, offset int) {
+	m.Store(word[:], offset)
 }
