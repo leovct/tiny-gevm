@@ -30,11 +30,13 @@ type IStackOps interface {
 	// It pops an item from the stack, this is the offset.
 	// Then it reads the word from memory at the given offset.
 	// Finally, it pushes the result to the top of the stack.
+	// Stack: [offset, ...] -> [word, ...]
 	MLoad() error
 
 	// MStore saves a word to memory.
 	// It pops two items from the stack, offset and value.
 	// Then it writes the word at the given offset in the memory.
+	// Stack: [offset, word, ...] -> [...]
 	MStore() error
 
 	IPushOps
@@ -77,7 +79,8 @@ func (e *EVM) MStore() error {
 	}
 
 	// Store word at the given offset in memory.
-	e.memory.Store32(value.Bytes32(), int(offset.Uint64()))
+	word := value.Bytes32()
+	e.memory.Store32(word, int(offset.Uint64()))
 	return nil
 }
 
