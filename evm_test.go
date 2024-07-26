@@ -7,6 +7,38 @@ import (
 	"github.com/holiman/uint256"
 )
 
+// internalEVM defines the methods that an Ethereum Virtual Machine implementation should have, including helper methods.
+// It is only used for testing.
+type internalEVM interface {
+	IEVM
+
+	// Helper methods.
+	// Push an item to the stack.
+	HelperPush(*uint256.Int) error
+	// Pop an item of the stack.
+	HelperPop() (*uint256.Int, error)
+	// Write byte slice to memory at the specified offset.
+	HelperStore(value []byte, offset int)
+	// Load a chunck of the memory.
+	HelperLoad(size int) []byte
+}
+
+func (e *EVM) HelperPop() (*uint256.Int, error) {
+	return e.stack.Pop()
+}
+
+func (e *EVM) HelperPush(value *uint256.Int) error {
+	return e.stack.Push(value)
+}
+
+func (e *EVM) HelperStore(value []byte, offset int) {
+	e.memory.Store(value, offset)
+}
+
+func (e *EVM) HelperLoad(size int) []byte {
+	return e.memory.Load(0, size)
+}
+
 func TestNewEVM(t *testing.T) {
 	evm := NewEVM(nil)
 	if evm == nil {
@@ -59,15 +91,21 @@ func testStackOperationWithNewEVM(t *testing.T, op func(evm IEVM) error, expecte
 
 // Helper function to test stack operations with an existing EVM.
 func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM) error, expectedErr error, initialStack, expectedStack []uint64, initialMemory, expectedMemory []byte) {
+	// Extend the capabilities of the EVM using the internal EVM which defines helper methods to access the states of the stack and the memory.
+	internalEVM, ok := evm.(internalEVM)
+	if !ok {
+		t.Fatal("IEVM does not implement internalEVM")
+	}
+
 	// Push initial elements to the stack.
 	for i, v := range initialStack {
-		if err := evm.HelperPush(uint256.NewInt(v)); err != nil {
+		if err := internalEVM.HelperPush(uint256.NewInt(v)); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 		}
 	}
 
 	// Load initial elements to the memory.
-	evm.HelperStore(initialMemory, 0)
+	internalEVM.HelperStore(initialMemory, 0)
 
 	// Perform the operation.
 	if err := op(evm); err != expectedErr {
@@ -76,7 +114,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 
 	// Check the stack after the operation.
 	for i := len(expectedStack) - 1; i >= 0; i-- {
-		popped, err := evm.HelperPop()
+		popped, err := internalEVM.HelperPop()
 		if err != nil {
 			t.Errorf("Pop() returned an unexpected error: %v", err)
 		}
@@ -92,7 +130,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 	}
 
 	// Check the memory after the operation.
-	actualMemory := evm.HelperLoad(len(expectedMemory))
+	actualMemory := internalEVM.HelperLoad(len(expectedMemory))
 	if !bytes.Equal(actualMemory, expectedMemory) {
 		t.Errorf("Memory mismatch. Expected: %v, got: %v", expectedMemory, actualMemory)
 	}

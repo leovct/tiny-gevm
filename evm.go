@@ -11,17 +11,6 @@ type IEVM interface {
 	ISHA3Ops
 	IStackOps
 	IMemoryOps
-
-	// Helper methods.
-	// TODO: Get rid of these methods if possible.
-	// Push an item to the stack.
-	HelperPush(*uint256.Int) error
-	// Pop an item of the stack.
-	HelperPop() (*uint256.Int, error)
-	// Write byte slice to memory at the specified offset.
-	HelperStore(value []byte, offset int)
-	// Load a chunck of the memory.
-	HelperLoad(size int) []byte
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -58,22 +47,6 @@ func NewEVM(code []byte) IEVM {
 			pc: 0,
 		},
 	}
-}
-
-func (e *EVM) HelperPop() (*uint256.Int, error) {
-	return e.stack.Pop()
-}
-
-func (e *EVM) HelperPush(value *uint256.Int) error {
-	return e.stack.Push(value)
-}
-
-func (e *EVM) HelperStore(value []byte, offset int) {
-	e.memory.Store(value, offset)
-}
-
-func (e *EVM) HelperLoad(size int) []byte {
-	return e.memory.Load(0, size)
 }
 
 // Perform an arithmetic or a bitwise operation on the top two elements on the stack.

@@ -46,16 +46,22 @@ func TestPushOnFullStack(t *testing.T) {
 	code := []byte{0x60, 0x11}
 	evm := NewEVM(code)
 
+	// Extend the capabilities of the EVM using the internal EVM which defines helper methods to access the states of the stack and the memory.
+	internalEVM, ok := evm.(internalEVM)
+	if !ok {
+		t.Fatal("IEVM does not implement internalEVM")
+	}
+
 	// Push elements to the stack until its full.
 	for i := 0; i < 1024; i++ {
-		if err := evm.HelperPush(uint256.NewInt(uint64(i))); err != nil {
+		if err := internalEVM.HelperPush(uint256.NewInt(uint64(i))); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 			break
 		}
 	}
 
 	// Try to push the first element (0x11) from code.
-	if err := evm.Push1(); err == nil {
+	if err := internalEVM.Push1(); err == nil {
 		t.Errorf("Operation returned an unexpected error: %v, wanted: %v", err, ErrStackOverflow)
 	}
 }
@@ -119,16 +125,22 @@ func TestDupOnFullStack(t *testing.T) {
 	// Create a new EVM.
 	evm := NewEVM(nil)
 
+	// Extend the capabilities of the EVM using the internal EVM which defines helper methods to access the states of the stack and the memory.
+	internalEVM, ok := evm.(internalEVM)
+	if !ok {
+		t.Fatal("IEVM does not implement internalEVM")
+	}
+
 	// Push elements to the stack until its full.
 	for i := 0; i < 1024; i++ {
-		if err := evm.HelperPush(uint256.NewInt(uint64(i))); err != nil {
+		if err := internalEVM.HelperPush(uint256.NewInt(uint64(i))); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 			break
 		}
 	}
 
 	// Try to duplicate the first element.
-	if err := evm.Dup1(); err == nil {
+	if err := internalEVM.Dup1(); err == nil {
 		t.Errorf("Operation returned an unexpected error: %v, wanted: %v", err, ErrStackOverflow)
 	}
 }
