@@ -7,9 +7,9 @@ import (
 	"github.com/holiman/uint256"
 )
 
-// internalEVM defines the methods that an Ethereum Virtual Machine implementation should have, including helper methods.
-// It is only used for testing.
-type internalEVM interface {
+// ExtendedEVM defines the methods that an Ethereum Virtual Machine implementation should have,
+// including helper methods for testing purposes.
+type ExtendedEVM interface {
 	IEVM
 
 	// Helper methods.
@@ -92,20 +92,20 @@ func testStackOperationWithNewEVM(t *testing.T, op func(evm IEVM) error, expecte
 // Helper function to test stack operations with an existing EVM.
 func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM) error, expectedErr error, initialStack, expectedStack []uint64, initialMemory, expectedMemory []byte) {
 	// Extend the capabilities of the EVM using the internal EVM which defines helper methods to access the states of the stack and the memory.
-	internalEVM, ok := evm.(internalEVM)
+	testEvm, ok := evm.(ExtendedEVM)
 	if !ok {
 		t.Fatal("IEVM does not implement internalEVM")
 	}
 
 	// Push initial elements to the stack.
 	for i, v := range initialStack {
-		if err := internalEVM.HelperPush(uint256.NewInt(v)); err != nil {
+		if err := testEvm.HelperPush(uint256.NewInt(v)); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 		}
 	}
 
 	// Load initial elements to the memory.
-	internalEVM.HelperStore(initialMemory, 0)
+	testEvm.HelperStore(initialMemory, 0)
 
 	// Perform the operation.
 	if err := op(evm); err != expectedErr {
@@ -114,7 +114,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 
 	// Check the stack after the operation.
 	for i := len(expectedStack) - 1; i >= 0; i-- {
-		popped, err := internalEVM.HelperPop()
+		popped, err := testEvm.HelperPop()
 		if err != nil {
 			t.Errorf("Pop() returned an unexpected error: %v", err)
 		}
@@ -130,7 +130,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 	}
 
 	// Check the memory after the operation.
-	actualMemory := internalEVM.HelperLoad(len(expectedMemory))
+	actualMemory := testEvm.HelperLoad(len(expectedMemory))
 	if !bytes.Equal(actualMemory, expectedMemory) {
 		t.Errorf("Memory mismatch. Expected: %v, got: %v", expectedMemory, actualMemory)
 	}
