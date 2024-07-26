@@ -11,10 +11,10 @@ import (
 )
 
 var fileSectionMap = map[string]string{
-	"evm/storage.go": "## Storage",
-	"evm/memory.go":  "## Memory",
-	"evm/stack.go":   "## Stack",
-	"evm/evm.go":     "## EVM",
+	"evm/storage.go": "### Storage",
+	"evm/memory.go":  "### Memory",
+	"evm/stack.go":   "### Stack",
+	"evm/evm.go":     "### EVM",
 }
 
 func main() {
@@ -96,17 +96,18 @@ func updateSection(readme, section, newContent string) string {
 	nextSection := findNextSection(parts[1])
 	if nextSection == "" {
 		// If no next section, update until the end of the file
-		return fmt.Sprintf("%s%s\n\n```go\n%s\n```\n", parts[0], section, newContent)
+		return fmt.Sprintf("%s%s\n\n<details>\n<summary>Click to expand</summary>\n\n```go\n%s\n```\n\n</details>\n", parts[0], section, newContent)
 	}
 
 	// Update content between this section and the next
-	return fmt.Sprintf("%s%s\n\n```go\n%s\n```\n\n%s%s", parts[0], section, newContent, nextSection, strings.SplitN(parts[1], nextSection, 2)[1])
+	remainingParts := strings.SplitN(parts[1], nextSection, 2)
+	return fmt.Sprintf("%s%s\n\n<details>\n<summary>Click to expand</summary>\n\n```go\n%s\n```\n\n</details>\n\n%s%s", parts[0], section, newContent, nextSection, remainingParts[1])
 }
 
 func findNextSection(content string) string {
 	lines := strings.Split(content, "\n")
 	for _, line := range lines {
-		if strings.HasPrefix(line, "## ") {
+		if strings.HasPrefix(line, "### ") {
 			return line
 		}
 	}

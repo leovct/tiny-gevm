@@ -6,7 +6,46 @@ The aim is to keep it simple, quick to implement and interesting to learn more a
 
 Inspired by [gevm](https://github.com/Jesserc/gevm) by [Jesserc](https://twitter.com/jesserc_).
 
-## EVM
+## Table of Contents
+
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [References](#references)
+- [Documentation](#documentation)
+
+## Usage
+
+Run the EVM (still WIP!).
+
+```bash
+go run ./cmd
+```
+
+Or build the binary.
+
+```bash
+go build -o tiny-gevm ./cmd
+./tiny-gevm
+```
+
+## Contributing
+
+Update the EVM documentation.
+
+```bash
+go run tools/update_readme.go
+```
+
+## References
+
+- [evm.codes](https://www.evm.codes/)
+
+## Documentation
+
+### EVM
+
+<details>
+<summary>Click to expand</summary>
 
 ```go
 // IEVM defines the methods that an Ethereum Virtual Machine implementation should have.
@@ -40,7 +79,12 @@ type MachineState struct {
 }
 ```
 
-## Stack
+</details>
+
+### Stack
+
+<details>
+<summary>Click to expand</summary>
 
 ```go
 // IStack defines the methods that a stack implementation should have.
@@ -73,7 +117,12 @@ type Stack struct {
 }
 ```
 
-## Memory
+</details>
+
+### Memory
+
+<details>
+<summary>Click to expand</summary>
 
 ```go
 // IMemory defines the methods that a memory implementation should have.
@@ -107,7 +156,12 @@ type Memory struct {
 }
 ```
 
-## Storage
+</details>
+
+### Storage
+
+<details>
+<summary>Click to expand</summary>
 
 ```go
 // IStorage defines the methods that a storage implementation should have.
@@ -127,6 +181,4 @@ type Storage struct {
 }
 ```
 
-## References
-
-- [evm.codes](https://www.evm.codes/)
+</details>
