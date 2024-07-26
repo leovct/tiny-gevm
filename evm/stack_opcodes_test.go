@@ -47,21 +47,21 @@ func TestPushOnFullStack(t *testing.T) {
 	evm := NewEVM(code)
 
 	// Extend the capabilities of the EVM using the internal EVM which defines helper methods to access the states of the stack and the memory.
-	internalEVM, ok := evm.(internalEVM)
+	testEVM, ok := evm.(ExtendedEVM)
 	if !ok {
 		t.Fatal("IEVM does not implement internalEVM")
 	}
 
 	// Push elements to the stack until its full.
 	for i := 0; i < 1024; i++ {
-		if err := internalEVM.HelperPush(uint256.NewInt(uint64(i))); err != nil {
+		if err := testEVM.HelperPush(uint256.NewInt(uint64(i))); err != nil {
 			t.Errorf("Push() returned an unexpected error at iteration %d: %v", i, err)
 			break
 		}
 	}
 
 	// Try to push the first element (0x11) from code.
-	if err := internalEVM.Push1(); err == nil {
+	if err := testEVM.Push1(); err == nil {
 		t.Errorf("Operation returned an unexpected error: %v, wanted: %v", err, ErrStackOverflow)
 	}
 }
