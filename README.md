@@ -25,6 +25,8 @@ type IEVM interface {
 	HelperPop() (*uint256.Int, error)
 	// Write byte slice to memory at the specified offset.
 	HelperStore(value []byte, offset int)
+	// Load a chunck of the memory.
+	HelperLoad(size int) []byte
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -97,8 +99,14 @@ type IMemory interface {
 	// Returns a byte slice of length 'size', zero-padded if necessary.
 	Load(offset, size int) []byte
 
+	// Load a byte from memory at the given offset.
+	LoadByte(offset int) byte
+
 	// Load a word (32 bytes) from memory at the given offset.
-	LoadWord(offset int) []byte
+	LoadWord(offset int) [32]byte
+
+	// Store a byte to memory at the given offset.
+	StoreByte(value byte, offset int)
 
 	// Store a word (32 bytes) to memory at the given offset.
 	StoreWord(word [32]byte, offset int)
