@@ -9,12 +9,14 @@ type IMemoryOps interface {
 	// Then it reads the word from memory at the given offset.
 	// Finally, it pushes the result to the top of the stack.
 	// Stack: [offset, ...] -> [word, ...]
+	// Memory: [offset:offset+32] = word
 	MLoad() error
 
 	// MStore saves a word to memory.
-	// It pops two items from the stack, offset and value.
+	// It pops two items from the stack, offset and value (32-bytes).
 	// Then it writes the word at the given offset in the memory.
 	// Stack: [offset, word, ...] -> [...]
+	// Memory: [offset:offset+32] = ??? -> [offset:offset+32] = value
 	MStore() error
 }
 
@@ -29,7 +31,7 @@ func (e *EVM) MLoad() error {
 	word := e.memory.LoadWord(int(offset.Uint64()))
 
 	// Store word at the top of the stack.
-	value := new(uint256.Int).SetBytes(word)
+	value := new(uint256.Int).SetBytes(word[:])
 	return e.stack.Push(value)
 }
 
