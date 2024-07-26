@@ -20,6 +20,8 @@ type IEVM interface {
 	HelperPop() (*uint256.Int, error)
 	// Write byte slice to memory at the specified offset.
 	HelperStore(value []byte, offset int)
+	// Load a chunck of the memory.
+	HelperLoad(size int) []byte
 }
 
 // EVM represents an Ethereum Virtual Machine.
@@ -68,6 +70,10 @@ func (e *EVM) HelperPush(value *uint256.Int) error {
 
 func (e *EVM) HelperStore(value []byte, offset int) {
 	e.memory.Store(value, offset)
+}
+
+func (e *EVM) HelperLoad(size int) []byte {
+	return e.memory.Load(0, size)
 }
 
 // Perform an arithmetic or a bitwise operation on the top two elements on the stack.

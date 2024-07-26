@@ -12,14 +12,14 @@ func TestPop(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Pop() }
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 2}
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil, nil)
 }
 
 func TestPush0(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Push0() }
 	initialStack := []uint64{1, 2, 3}
 	expectedStack := []uint64{1, 2, 3, 0}
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil, nil)
 }
 
 func TestPushN(t *testing.T) {
@@ -90,13 +90,13 @@ func testPushOperation(t *testing.T, pushSize int, initialStack []uint64) {
 	// Push a first value to the stack.
 	value1ToUint64 := new(uint256.Int).SetBytes(value1).Uint64()
 	expectedStack := append(initialStack, value1ToUint64)
-	testStackOperationWithExistingEVM(t, evm, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithExistingEVM(t, evm, op, nil, initialStack, expectedStack, nil, nil)
 
 	// Push a second value to the stack.
 	initialStack = append(initialStack, value1ToUint64)
 	value2ToUint64 := new(uint256.Int).SetBytes(value2).Uint64()
 	expectedStack = append(initialStack, value2ToUint64)
-	testStackOperationWithExistingEVM(t, evm, op, nil, initialStack, expectedStack, nil)
+	testStackOperationWithExistingEVM(t, evm, op, nil, initialStack, expectedStack, nil, nil)
 }
 
 func TestDupN(t *testing.T) {
@@ -112,7 +112,7 @@ func TestDupOnEmptyStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.Dup1() }
 	initialStack := []uint64{}
 	expectedStack := []uint64{}
-	testStackOperationWithNewEVM(t, op, ErrEmptyStack, initialStack, expectedStack, nil, nil)
+	testStackOperationWithNewEVM(t, op, ErrEmptyStack, initialStack, expectedStack, nil, nil, nil)
 }
 
 func TestDupOnFullStack(t *testing.T) {
@@ -156,7 +156,7 @@ func testDupOperation(t *testing.T, dupSize int, initialStack []uint64) {
 	expectedStack := append(initialStack, value)
 
 	// Test the dup operation.
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil, nil)
 }
 
 func TestSwapN(t *testing.T) {
@@ -190,5 +190,5 @@ func testSwapOperation(t *testing.T, dupSize int, initialStack []uint64) {
 	expectedStack[len(initialStack)-1], expectedStack[index] = expectedStack[index], expectedStack[len(initialStack)-1]
 
 	// Test the dup operation.
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil, nil)
 }

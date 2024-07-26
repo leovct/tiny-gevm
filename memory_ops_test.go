@@ -21,12 +21,12 @@ func TestMLoad(t *testing.T) {
 	memory = append(append(append(memory, word1[:]...), word2[:]...), word3[:]...)
 
 	expectedStack := []uint64{3, 2, 222}
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil, nil)
 }
 
 func TestMLoadOnEmptyStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.MLoad() }
-	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil)
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil, nil)
 }
 
 func TestMStore(t *testing.T) {
@@ -50,18 +50,18 @@ func TestMStore(t *testing.T) {
 	// - Stack: [2, 3]
 	// - Memory: [111, 444, 333]
 	expectedStack := []uint64{3, 2}
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil, nil)
 }
 
 func TestMStoreOnEmptyStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.MStore() }
-	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil)
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil, nil)
 }
 
 func TestMStoreOnOneElementStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.MStore() }
 	initialStack := []uint64{1}
-	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil)
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil, nil)
 }
 
 func TestMStore8(t *testing.T) {
@@ -79,16 +79,16 @@ func TestMStore8(t *testing.T) {
 	// - Stack: [2, 3]
 	// - Memory: [1, 20, 3, 4]
 	expectedStack := []uint64{3, 2}
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil, nil)
 }
 
 func TestMStore8OnEmptyStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.MStore8() }
-	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil)
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil, nil)
 }
 
 func TestMStore8OnOneElementStack(t *testing.T) {
 	op := func(evm IEVM) error { return evm.MStore8() }
 	initialStack := []uint64{1}
-	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil)
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil, nil)
 }

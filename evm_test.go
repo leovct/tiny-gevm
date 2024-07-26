@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/holiman/uint256"
@@ -20,19 +21,19 @@ func TestStackOperationUnderflows(t *testing.T) {
 
 	// 2 operands arithmetic operation.
 	addOp := func(evm IEVM) error { return evm.Add() }
-	testStackOperationWithNewEVM(t, addOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil)
-	testStackOperationWithNewEVM(t, addOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, addOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil, nil)
+	testStackOperationWithNewEVM(t, addOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil, nil)
 
 	// 3 operands arithmetic operation.
 	addModOp := func(evm IEVM) error { return evm.AddMod() }
-	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil)
-	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil)
-	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, twoElementsStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil, nil)
+	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil, nil)
+	testStackOperationWithNewEVM(t, addModOp, ErrStackUnderflow, twoElementsStack, emptyStack, nil, nil, nil)
 
 	// 2 operands comparison operation.
 	eqOp := func(evm IEVM) error { return evm.Eq() }
-	testStackOperationWithNewEVM(t, eqOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil)
-	testStackOperationWithNewEVM(t, eqOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil)
+	testStackOperationWithNewEVM(t, eqOp, ErrStackUnderflow, emptyStack, emptyStack, nil, nil, nil)
+	testStackOperationWithNewEVM(t, eqOp, ErrStackUnderflow, oneElementStack, emptyStack, nil, nil, nil)
 }
 
 func TestStackOperationOnFullStack(t *testing.T) {
@@ -47,17 +48,17 @@ func TestStackOperationOnFullStack(t *testing.T) {
 	copy(expectedStack, initialStack)
 	expectedStack[1022] = 2
 
-	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil)
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, nil, nil, nil)
 }
 
 // Helper function to test stack operations with a fresh new EVM.
-func testStackOperationWithNewEVM(t *testing.T, op func(evm IEVM) error, expectedErr error, initialStack []uint64, expectedStack []uint64, memory, code []byte) {
+func testStackOperationWithNewEVM(t *testing.T, op func(evm IEVM) error, expectedErr error, initialStack, expectedStack []uint64, initialMemory, expectedMemory, code []byte) {
 	evm := NewEVM(code)
-	testStackOperationWithExistingEVM(t, evm, op, expectedErr, initialStack, expectedStack, memory)
+	testStackOperationWithExistingEVM(t, evm, op, expectedErr, initialStack, expectedStack, initialMemory, expectedMemory)
 }
 
 // Helper function to test stack operations with an existing EVM.
-func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM) error, expectedErr error, initialStack []uint64, expectedStack []uint64, memory []byte) {
+func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM) error, expectedErr error, initialStack, expectedStack []uint64, initialMemory, expectedMemory []byte) {
 	// Push initial elements to the stack.
 	for i, v := range initialStack {
 		if err := evm.HelperPush(uint256.NewInt(v)); err != nil {
@@ -66,7 +67,7 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 	}
 
 	// Load initial elements to the memory.
-	evm.HelperStore(memory, 0)
+	evm.HelperStore(initialMemory, 0)
 
 	// Perform the operation.
 	if err := op(evm); err != expectedErr {
@@ -88,5 +89,11 @@ func testStackOperationWithExistingEVM(t *testing.T, evm IEVM, op func(evm IEVM)
 				t.Errorf("Expected %v, got %v", expectedValue, popped.Uint64())
 			}
 		}
+	}
+
+	// Check the memory after the operation.
+	actualMemory := evm.HelperLoad(len(expectedMemory))
+	if !bytes.Equal(actualMemory, expectedMemory) {
+		t.Errorf("Memory mismatch. Expected: %v, got: %v", expectedMemory, actualMemory)
 	}
 }
