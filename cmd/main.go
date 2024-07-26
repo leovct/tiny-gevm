@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-evm/evm"
+)
 
 func main() {
-	evm := NewEVM(nil)
+	evm := evm.NewEVM(nil)
 	fmt.Println("EVM:", evm)
 }

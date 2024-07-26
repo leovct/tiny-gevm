@@ -1,4 +1,4 @@
-package main
+package evm
 
 // IStorage defines the methods that a storage implementation should have.
 type IStorage interface {

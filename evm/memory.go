@@ -1,4 +1,4 @@
-package main
+package evm
 
 // IMemory defines the methods that a memory implementation should have.
 type IMemory interface {

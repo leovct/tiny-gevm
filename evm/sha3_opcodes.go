@@ -1,4 +1,4 @@
-package main
+package evm
 
 import (
 	"github.com/ethereum/go-ethereum/crypto"

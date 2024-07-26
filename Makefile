@@ -39,7 +39,7 @@ lint: tidy vet golangci-lint ## Run linters.
 
 .PHONY: test
 test: ## Run tests.
-	go test -race -v -coverprofile=coverage.out go-evm
+	go test -race -v -coverprofile=coverage.out go-evm/evm
 	go tool cover -func coverage.out
 
 .PHONY: coverage

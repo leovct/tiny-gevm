@@ -11,10 +11,10 @@ import (
 )
 
 var fileSectionMap = map[string]string{
-	"storage.go": "## Storage",
-	"memory.go":  "## Memory",
-	"stack.go":   "## Stack",
-	"evm.go":     "## EVM",
+	"evm/storage.go": "## Storage",
+	"evm/memory.go":  "## Memory",
+	"evm/stack.go":   "## Stack",
+	"evm/evm.go":     "## EVM",
 }
 
 func main() {
