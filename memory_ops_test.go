@@ -63,3 +63,32 @@ func TestMStoreOnOneElementStack(t *testing.T) {
 	initialStack := []uint64{1}
 	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil)
 }
+
+func TestMStore8(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MStore8() }
+
+	// Stack
+	// [1, 444, 2, 3]
+	offset := 1
+	initialStack := []uint64{3, 2, 0x20, uint64(offset)}
+
+	// Memory
+	memory := []byte{0x01, 0x02, 0x03, 0x04}
+
+	// Expected
+	// - Stack: [2, 3]
+	// - Memory: [1, 20, 3, 4]
+	expectedStack := []uint64{3, 2}
+	testStackOperationWithNewEVM(t, op, nil, initialStack, expectedStack, memory, nil)
+}
+
+func TestMStore8OnEmptyStack(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MStore8() }
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, nil, nil, nil, nil)
+}
+
+func TestMStore8OnOneElementStack(t *testing.T) {
+	op := func(evm IEVM) error { return evm.MStore8() }
+	initialStack := []uint64{1}
+	testStackOperationWithNewEVM(t, op, ErrStackUnderflow, initialStack, nil, nil, nil)
+}

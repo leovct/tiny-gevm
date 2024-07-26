@@ -1,6 +1,8 @@
 package main
 
-import "github.com/holiman/uint256"
+import (
+	"github.com/holiman/uint256"
+)
 
 // IPushOps defines operations on the EVM memory.
 type IMemoryOps interface {
@@ -18,6 +20,13 @@ type IMemoryOps interface {
 	// Stack: [offset, word, ...] -> [...]
 	// Memory: [offset:offset+32] = ??? -> [offset:offset+32] = value
 	MStore() error
+
+	// MStore8 saves a byte to memory.
+	// It pops two items from the stack, offset and value (1-byte).
+	// Then it writes the value at the given offset in the memory.
+	// Stack: [offset, value, ...] -> [...]
+	// Memory: [offset:offset+8] = ??? -> [offset:offset+8] = value
+	MStore8() error
 }
 
 func (e *EVM) MLoad() error {
@@ -52,5 +61,26 @@ func (e *EVM) MStore() error {
 	// Store word at the given offset in memory.
 	word := value.Bytes32()
 	e.memory.StoreWord(word, int(offset.Uint64()))
+	return nil
+}
+
+func (e *EVM) MStore8() error {
+	// Load offset from the stack.
+	offset, err := e.stack.Pop()
+	if err != nil {
+		return err
+	}
+
+	// Load value from the stack.
+	var value *uint256.Int
+	value, err = e.stack.Pop()
+	if err != nil {
+		return err
+	}
+
+	// Store byte at the given offset in memory.
+	word := value.Bytes()
+	// TODO: Should we check the size of word?
+	e.memory.StoreByte(word[0], int(offset.Uint64()))
 	return nil
 }
